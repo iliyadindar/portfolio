@@ -1227,6 +1227,7 @@
                 // Filter out forks and repos already displayed
                 const newRepos = repos.filter(repo => {
                     if (repo.fork) return false;
+                    if (repo.name.toLowerCase() === GITHUB_USERNAME.toLowerCase()) return false;
                     const repoUrl = repo.html_url.toLowerCase().replace(/\/$/, '');
                     const repoName = repo.name.toLowerCase();
                     return !existingUrls.has(repoUrl) && !existingNames.has(repoName);
