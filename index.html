@@ -54,7 +54,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ---- GRID BACKGROUND ---- */
         .grid-bg {
             position: fixed; inset: 0;
             background-image:
@@ -69,650 +68,184 @@
         .scanline {
             position: fixed; inset: 0;
             pointer-events: none; z-index: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 0, 0, 0.03) 2px,
-                rgba(0, 0, 0, 0.03) 4px
-            );
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
         }
 
-        /* Ambient glows */
-        .glow-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            pointer-events: none;
-            z-index: 0;
-        }
+        .glow-orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
         .glow-orb.g1 { width: 500px; height: 500px; top: -100px; left: -100px; background: rgba(74, 222, 128, 0.04); }
         .glow-orb.g2 { width: 600px; height: 600px; bottom: -200px; right: -150px; background: rgba(96, 165, 250, 0.03); }
 
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 28px;
-            position: relative;
-            z-index: 1;
-        }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
 
-        /* ---- NAV ---- */
         nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            padding: 0;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0;
             background: rgba(6, 8, 12, 0.85);
             backdrop-filter: blur(24px) saturate(1.5);
             -webkit-backdrop-filter: blur(24px) saturate(1.5);
             border-bottom: 1px solid var(--border);
         }
+        nav .container { display: flex; justify-content: space-between; align-items: center; height: 64px; }
 
-        nav .container {
-            display: flex; justify-content: space-between; align-items: center;
-            height: 64px;
-        }
-
-        .nav-logo {
-            font-family: 'Fira Code', monospace;
-            font-weight: 500;
-            font-size: 0.95rem;
-            color: var(--green);
-            text-decoration: none;
-            letter-spacing: -0.3px;
-        }
-        .nav-logo .cursor {
-            animation: blink 1.2s step-end infinite;
-            color: var(--green);
-        }
+        .nav-logo { font-family: 'Fira Code', monospace; font-weight: 500; font-size: 0.95rem; color: var(--green); text-decoration: none; letter-spacing: -0.3px; }
+        .nav-logo .cursor { animation: blink 1.2s step-end infinite; color: var(--green); }
         @keyframes blink { 50% { opacity: 0; } }
 
-        .nav-links {
-            display: flex; gap: 8px; list-style: none;
-        }
+        .nav-links { display: flex; gap: 8px; list-style: none; }
+        .nav-links a { font-family: 'Fira Code', monospace; color: var(--text-dim); text-decoration: none; font-size: 0.78rem; font-weight: 400; padding: 6px 14px; border-radius: 6px; transition: all 0.2s; }
+        .nav-links a:hover { color: var(--text); background: var(--green-dim); }
 
-        .nav-links a {
-            font-family: 'Fira Code', monospace;
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.78rem;
-            font-weight: 400;
-            padding: 6px 14px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text);
-            background: var(--green-dim);
-        }
-
-        /* Hamburger */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 8px;
-            border: none;
-            background: none;
-            z-index: 110;
-        }
-        .hamburger span {
-            width: 22px; height: 2px;
-            background: var(--text-dim);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; border: none; background: none; z-index: 110; }
+        .hamburger span { width: 22px; height: 2px; background: var(--text-dim); border-radius: 2px; transition: all 0.3s ease; }
         .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--green); }
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--green); }
 
-        .mobile-menu {
-            display: none;
-            position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
-            background: rgba(6, 8, 12, 0.97);
-            backdrop-filter: blur(40px);
-            z-index: 99;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-        }
+        .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; bottom: 0; background: rgba(6, 8, 12, 0.97); backdrop-filter: blur(40px); z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
         .mobile-menu.open { display: flex; }
-        .mobile-menu a {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.1rem;
-            color: var(--text-dim);
-            text-decoration: none;
-            padding: 12px 32px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
+        .mobile-menu a { font-family: 'Fira Code', monospace; font-size: 1.1rem; color: var(--text-dim); text-decoration: none; padding: 12px 32px; border-radius: 8px; transition: all 0.2s; }
         .mobile-menu a:hover { color: var(--green); background: var(--green-dim); }
 
-        /* ---- HERO ---- */
-        .hero {
-            min-height: 100vh;
-            display: flex; align-items: center;
-            padding-top: 64px;
-        }
-
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 64px; }
         .hero-content { width: 100%; }
 
-        /* Terminal-style intro */
-        .terminal-line {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.82rem;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s ease both;
-        }
+        .terminal-line { font-family: 'Fira Code', monospace; font-size: 0.82rem; color: var(--text-dim); margin-bottom: 20px; animation: fadeIn 0.5s ease both; }
         .terminal-line .prompt { color: var(--green); }
         .terminal-line .cmd { color: var(--text); }
 
-        .hero-name {
-            font-size: clamp(2.8rem, 7vw, 5rem);
-            font-weight: 800;
-            letter-spacing: -3px;
-            line-height: 1.05;
-            margin-bottom: 8px;
-            animation: fadeInUp 0.6s ease 0.15s both;
-        }
+        .hero-name { font-size: clamp(2.8rem, 7vw, 5rem); font-weight: 800; letter-spacing: -3px; line-height: 1.05; margin-bottom: 8px; animation: fadeInUp 0.6s ease 0.15s both; }
+        .hero-name .accent { color: var(--green); position: relative; }
 
-        .hero-name .accent {
-            color: var(--green);
-            position: relative;
-        }
-
-        .hero-title {
-            font-family: 'Fira Code', monospace;
-            font-size: 1rem;
-            color: var(--text-dim);
-            font-weight: 400;
-            margin-bottom: 28px;
-            animation: fadeInUp 0.6s ease 0.25s both;
-        }
+        .hero-title { font-family: 'Fira Code', monospace; font-size: 1rem; color: var(--text-dim); font-weight: 400; margin-bottom: 28px; animation: fadeInUp 0.6s ease 0.25s both; }
         .hero-title .separator { color: var(--text-muted); margin: 0 8px; }
 
-        .hero-desc {
-            font-size: 1.05rem;
-            color: var(--text-dim);
-            max-width: 560px;
-            font-weight: 300;
-            margin-bottom: 40px;
-            animation: fadeInUp 0.6s ease 0.35s both;
-        }
+        .hero-desc { font-size: 1.05rem; color: var(--text-dim); max-width: 560px; font-weight: 300; margin-bottom: 40px; animation: fadeInUp 0.6s ease 0.35s both; }
 
-        .hero-actions {
-            display: flex; gap: 12px; flex-wrap: wrap;
-            animation: fadeInUp 0.6s ease 0.45s both;
-        }
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; animation: fadeInUp 0.6s ease 0.45s both; }
 
-        .btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.88rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            cursor: pointer; border: none;
-        }
-
-        .btn-primary {
-            background: var(--green);
-            color: var(--bg);
-        }
-        .btn-primary:hover {
-            background: #6ee7a0;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(74, 222, 128, 0.25);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border-accent);
-        }
-        .btn-outline:hover {
-            border-color: var(--green);
-            background: var(--green-dim);
-            transform: translateY(-2px);
-        }
-
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 600; text-decoration: none; transition: all 0.25s ease; cursor: pointer; border: none; }
+        .btn-primary { background: var(--green); color: var(--bg); }
+        .btn-primary:hover { background: #6ee7a0; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(74, 222, 128, 0.25); }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border-accent); }
+        .btn-outline:hover { border-color: var(--green); background: var(--green-dim); transform: translateY(-2px); }
         .btn svg { width: 16px; height: 16px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ---- STATUS BAR ---- */
-        .status-bar {
-            display: flex; gap: 24px; flex-wrap: wrap;
-            margin-top: 48px;
-            padding-top: 32px;
-            border-top: 1px solid var(--border);
-            animation: fadeInUp 0.6s ease 0.55s both;
-        }
-
-        .status-item {
-            display: flex; align-items: center; gap: 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            color: var(--text-dim);
-        }
-        .status-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            animation: pulse 2.5s infinite;
-        }
+        .status-bar { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); animation: fadeInUp 0.6s ease 0.55s both; }
+        .status-item { display: flex; align-items: center; gap: 8px; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-dim); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; animation: pulse 2.5s infinite; }
         .status-dot.live { background: var(--green); box-shadow: 0 0 8px rgba(74, 222, 128, 0.4); }
         .status-dot.amber { background: var(--amber); box-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        /* ---- SECTIONS ---- */
         section { padding: 100px 0; }
 
-        .section-label {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--green);
-            margin-bottom: 10px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .section-label::after {
-            content: '';
-            flex: 1; height: 1px;
-            background: linear-gradient(90deg, var(--border), transparent);
-        }
+        .section-label { font-family: 'Fira Code', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 3px; color: var(--green); margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
 
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 48px;
-        }
+        .section-title { font-size: 2rem; font-weight: 700; letter-spacing: -1px; margin-bottom: 48px; }
 
-        /* ---- CURRENTLY ---- */
-        .focus-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .focus-card {
-            padding: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .focus-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 3px; height: 100%;
-            border-radius: 0 3px 3px 0;
-            transition: height 0.3s ease;
-        }
-
+        .focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .focus-card { padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .focus-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 0 3px 3px 0; transition: height 0.3s ease; }
         .focus-card.security::before { background: var(--red); }
         .focus-card.ai::before { background: var(--blue); }
         .focus-card.dev::before { background: var(--green); }
         .focus-card.research::before { background: var(--purple); }
-
-        .focus-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-accent);
-            transform: translateY(-3px);
-        }
-
-        .focus-card .tag {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 10px;
-            display: flex; align-items: center; gap: 6px;
-        }
+        .focus-card:hover { background: var(--bg-card-hover); border-color: var(--border-accent); transform: translateY(-3px); }
+        .focus-card .tag { font-family: 'Fira Code', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .focus-card.security .tag { color: var(--red); }
         .focus-card.ai .tag { color: var(--blue); }
         .focus-card.dev .tag { color: var(--green); }
         .focus-card.research .tag { color: var(--purple); }
+        .focus-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+        .focus-card p { font-size: 0.84rem; color: var(--text-dim); line-height: 1.6; }
 
-        .focus-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .focus-card p {
-            font-size: 0.84rem;
-            color: var(--text-dim);
-            line-height: 1.6;
-        }
-
-        /* ---- ABOUT ---- */
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 14px;
-        }
-
-        .about-card {
-            padding: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            transition: all 0.3s ease;
-        }
-        .about-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-accent);
-            transform: translateY(-3px);
-        }
-
-        .about-card .icon {
-            width: 36px; height: 36px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem;
-            margin-bottom: 14px;
-        }
+        .about-content { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+        .about-card { padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; transition: all 0.3s ease; }
+        .about-card:hover { background: var(--bg-card-hover); border-color: var(--border-accent); transform: translateY(-3px); }
+        .about-card .icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 14px; }
         .about-card .icon.green { background: var(--green-dim); }
         .about-card .icon.blue { background: var(--blue-dim); }
         .about-card .icon.amber { background: var(--amber-dim); }
         .about-card .icon.red { background: var(--red-dim); }
         .about-card .icon.cyan { background: var(--cyan-dim); }
+        .about-card h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+        .about-card p { font-size: 0.8rem; color: var(--text-dim); }
 
-        .about-card h3 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .about-card p {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-        /* ---- TECH STACK ---- */
         .stack-section { display: grid; gap: 28px; }
+        .stack-category h3 { font-family: 'Fira Code', monospace; font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; padding-left: 4px; }
+        .stack-row { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip { font-family: 'Fira Code', monospace; font-size: 0.76rem; padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); transition: all 0.2s ease; cursor: default; }
+        .chip:hover { border-color: var(--green); background: var(--green-dim); transform: translateY(-2px); }
 
-        .stack-category h3 {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            padding-left: 4px;
-        }
-
-        .stack-row {
-            display: flex; flex-wrap: wrap; gap: 8px;
-        }
-
-        .chip {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.76rem;
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            transition: all 0.2s ease;
-            cursor: default;
-        }
-        .chip:hover {
-            border-color: var(--green);
-            background: var(--green-dim);
-            transform: translateY(-2px);
-        }
-
-        /* ---- PROJECTS ---- */
         .projects-grid { display: grid; gap: 14px; }
-
-        .project-card {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
-            align-items: start;
-            gap: 20px;
-            padding: 28px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-        }
-        .project-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-accent);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .project-icon {
-            width: 44px; height: 44px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
+        .project-card { display: grid; grid-template-columns: auto 1fr auto; align-items: start; gap: 20px; padding: 28px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        .project-card:hover { background: var(--bg-card-hover); border-color: var(--border-accent); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); }
+        .project-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
         .project-icon.g { background: var(--green-dim); }
         .project-icon.b { background: var(--blue-dim); }
         .project-icon.a { background: var(--amber-dim); }
         .project-icon.r { background: var(--red-dim); }
         .project-icon.c { background: var(--cyan-dim); }
         .project-icon.p { background: var(--purple-dim); }
+        .project-info h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+        .project-info .desc { font-size: 0.84rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
+        .project-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .ptag { font-family: 'Fira Code', monospace; font-size: 0.65rem; padding: 3px 10px; border-radius: 5px; background: var(--bg-elevated); color: var(--text-dim); border: 1px solid var(--border); }
+        .project-arrow { color: var(--text-muted); font-size: 1.2rem; transition: all 0.3s ease; align-self: center; }
+        .project-card:hover .project-arrow { color: var(--green); transform: translate(4px, -4px); }
 
-        .project-info h3 {
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .project-info .desc {
-            font-size: 0.84rem;
-            color: var(--text-dim);
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-        .project-tags {
-            display: flex; gap: 6px; flex-wrap: wrap;
-        }
-        .ptag {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.65rem;
-            padding: 3px 10px;
-            border-radius: 5px;
-            background: var(--bg-elevated);
-            color: var(--text-dim);
-            border: 1px solid var(--border);
-        }
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+        .service-card { padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; transition: all 0.3s ease; text-align: center; }
+        .service-card:hover { background: var(--bg-card-hover); border-color: var(--border-accent); transform: translateY(-3px); }
+        .service-card .s-icon { font-size: 1.6rem; margin-bottom: 12px; }
+        .service-card h3 { font-size: 0.92rem; font-weight: 600; margin-bottom: 6px; }
+        .service-card p { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
 
-        .project-arrow {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            align-self: center;
-        }
-        .project-card:hover .project-arrow {
-            color: var(--green);
-            transform: translate(4px, -4px);
-        }
+        .achievements-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .ach-item { display: flex; align-items: center; gap: 14px; padding: 18px 22px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: all 0.2s ease; }
+        .ach-item:hover { background: var(--bg-card-hover); border-color: var(--border-accent); }
+        .ach-item .icon { font-size: 1.2rem; flex-shrink: 0; }
+        .ach-item p { font-size: 0.84rem; color: var(--text-dim); }
+        .ach-item strong { color: var(--text); font-weight: 600; }
 
-        /* ---- SERVICES ---- */
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 14px;
-        }
-
-        .service-card {
-            padding: 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        .service-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-accent);
-            transform: translateY(-3px);
-        }
-        .service-card .s-icon {
-            font-size: 1.6rem;
-            margin-bottom: 12px;
-        }
-        .service-card h3 {
-            font-size: 0.92rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .service-card p {
-            font-size: 0.78rem;
-            color: var(--text-dim);
-            line-height: 1.5;
-        }
-
-        /* ---- ACHIEVEMENTS ---- */
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .ach-item {
-            display: flex; align-items: center; gap: 14px;
-            padding: 18px 22px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            transition: all 0.2s ease;
-        }
-        .ach-item:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-accent);
-        }
-        .ach-item .icon {
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-        .ach-item p {
-            font-size: 0.84rem;
-            color: var(--text-dim);
-        }
-        .ach-item strong {
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        /* ---- CONTACT ---- */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-        }
-
-        .contact-card {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 10px;
-            padding: 28px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            text-decoration: none;
-            color: var(--text);
-            transition: all 0.3s ease;
-        }
-        .contact-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-accent);
-            transform: translateY(-4px);
-        }
-        .contact-card .c-icon {
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
-        }
+        .contact-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        .contact-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 28px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; text-decoration: none; color: var(--text); transition: all 0.3s ease; }
+        .contact-card:hover { background: var(--bg-card-hover); border-color: var(--border-accent); transform: translateY(-4px); }
+        .contact-card .c-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
         .contact-card .c-icon.gh { background: var(--green-dim); }
         .contact-card .c-icon.li { background: var(--blue-dim); }
         .contact-card .c-icon.tg { background: var(--cyan-dim); }
         .contact-card .c-icon.or { background: var(--purple-dim); }
+        .contact-card .c-icon.xc { background: var(--amber-dim); }
+        .contact-card span { font-family: 'Fira Code', monospace; font-size: 0.78rem; color: var(--text-dim); }
 
-        .contact-card span {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.78rem;
-            color: var(--text-dim);
-        }
+        footer { padding: 40px 0; border-top: 1px solid var(--border); }
+        footer .container { display: flex; justify-content: space-between; align-items: center; }
+        footer p { font-family: 'Fira Code', monospace; font-size: 0.72rem; color: var(--text-muted); }
+        footer .made { display: flex; align-items: center; gap: 6px; }
 
-        /* ---- FOOTER ---- */
-        footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-        }
-        footer .container {
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        footer p {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-        }
-        footer .made {
-            display: flex; align-items: center; gap: 6px;
-        }
+        .reveal { opacity: 0; transform: translateY(24px); transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        /* ---- SCROLL REVEAL ---- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ---- RESPONSIVE ---- */
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .hamburger { display: flex; }
-
             .hero-name { letter-spacing: -2px; }
             .status-bar { gap: 16px; }
-
-            .focus-grid,
-            .about-content,
-            .achievements-grid,
-            .services-grid { grid-template-columns: 1fr; }
-
+            .focus-grid, .about-content, .achievements-grid, .services-grid { grid-template-columns: 1fr; }
             .contact-grid { grid-template-columns: repeat(3, 1fr); }
-
             .stack-row { gap: 6px; }
             .chip { font-size: 0.72rem; padding: 6px 12px; }
-
-            .project-card {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
+            .project-card { grid-template-columns: 1fr; gap: 12px; }
             .project-icon { display: none; }
             .project-arrow { display: none; }
-
             .hero-actions { flex-direction: column; }
             .btn { justify-content: center; }
-
             footer .container { flex-direction: column; gap: 8px; text-align: center; }
         }
-
         @media (max-width: 480px) {
             .contact-grid { grid-template-columns: 1fr; }
         }
@@ -733,7 +266,6 @@
     <div class="glow-orb g1"></div>
     <div class="glow-orb g2"></div>
 
-    <!-- NAV -->
     <nav>
         <div class="container">
             <a href="#" class="nav-logo">iliya<span class="cursor">_</span></a>
@@ -757,7 +289,6 @@
         <a href="#contact" onclick="closeMenu()">contact</a>
     </div>
 
-    <!-- HERO -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -785,6 +316,9 @@
                     <a href="https://linkedin.com/in/iliyadindar" target="_blank" class="btn btn-outline">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                         LinkedIn
+                    </a>
+                    <a href="https://x.com/iliyadindar" target="_blank" class="btn btn-outline">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                     </a>
                     <a href="https://t.me/tellmeninja" target="_blank" class="btn btn-outline">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
@@ -814,7 +348,6 @@
         </div>
     </section>
 
-    <!-- CURRENTLY FOCUSED ON -->
     <section id="focus">
         <div class="container">
             <div class="section-label reveal">current focus</div>
@@ -844,7 +377,6 @@
         </div>
     </section>
 
-    <!-- ABOUT -->
     <section id="about">
         <div class="container">
             <div class="section-label reveal">about</div>
@@ -879,7 +411,6 @@
         </div>
     </section>
 
-    <!-- TECH STACK -->
     <section id="stack">
         <div class="container">
             <div class="section-label reveal">stack</div>
@@ -943,7 +474,6 @@
         </div>
     </section>
 
-    <!-- PROJECTS -->
     <section id="projects">
         <div class="container">
             <div class="section-label reveal">projects</div>
@@ -1034,7 +564,6 @@
         </div>
     </section>
 
-    <!-- ACHIEVEMENTS -->
     <section id="achievements">
         <div class="container">
             <div class="section-label reveal">milestones</div>
@@ -1068,7 +597,6 @@
         </div>
     </section>
 
-    <!-- SERVICES -->
     <section id="services">
         <div class="container">
             <div class="section-label reveal">services</div>
@@ -1093,7 +621,6 @@
         </div>
     </section>
 
-    <!-- CONTACT -->
     <section id="contact">
         <div class="container">
             <div class="section-label reveal">connect</div>
@@ -1106,6 +633,10 @@
                 <a href="https://linkedin.com/in/iliyadindar" target="_blank" class="contact-card">
                     <div class="c-icon li">💼</div>
                     <span>LinkedIn</span>
+                </a>
+                <a href="https://x.com/iliyadindar" target="_blank" class="contact-card">
+                    <div class="c-icon xc">𝕏</div>
+                    <span>X</span>
                 </a>
                 <a href="https://t.me/tellmeninja" target="_blank" class="contact-card">
                     <div class="c-icon tg">✈️</div>
@@ -1123,7 +654,6 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <p>© 2026 Iliya Dindar</p>
@@ -1132,7 +662,6 @@
     </footer>
 
     <script>
-        // Scroll reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, i) => {
                 if (entry.isIntersecting) {
@@ -1143,53 +672,39 @@
         }, { threshold: 0.08 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // Hamburger menu
         const hamburger = document.getElementById('hamburger');
         const mobileMenu = document.getElementById('mobileMenu');
-
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
             mobileMenu.classList.toggle('open');
             document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
         });
-
         function closeMenu() {
             hamburger.classList.remove('active');
             mobileMenu.classList.remove('open');
             document.body.style.overflow = '';
         }
 
-        // Typing effect for terminal line
         const cmdEl = document.querySelector('.terminal-line .cmd');
         if (cmdEl) {
             const text = cmdEl.textContent;
             cmdEl.textContent = '';
             let i = 0;
             const type = () => {
-                if (i < text.length) {
-                    cmdEl.textContent += text[i];
-                    i++;
-                    setTimeout(type, 80 + Math.random() * 60);
-                }
+                if (i < text.length) { cmdEl.textContent += text[i]; i++; setTimeout(type, 80 + Math.random() * 60); }
             };
             setTimeout(type, 400);
         }
 
-        // Nav background on scroll
         const nav = document.querySelector('nav');
         window.addEventListener('scroll', () => {
-            nav.style.borderBottomColor = window.scrollY > 50
-                ? 'var(--border-accent)'
-                : 'var(--border)';
+            nav.style.borderBottomColor = window.scrollY > 50 ? 'var(--border-accent)' : 'var(--border)';
         });
 
-        // Auto-crawl GitHub repos and add missing projects
         (async function loadGitHubProjects() {
             const GITHUB_USERNAME = 'iliyadindar';
             const grid = document.querySelector('.projects-grid');
             if (!grid) return;
-
-            // Collect existing project identifiers (urls and names)
             const existingCards = grid.querySelectorAll('.project-card');
             const existingUrls = new Set();
             const existingNames = new Set();
@@ -1199,32 +714,19 @@
                 const nameEl = card.querySelector('.project-info h3');
                 if (nameEl) existingNames.add(nameEl.textContent.trim().toLowerCase());
             });
-
-            // Language -> icon/color mapping
             const langConfig = {
-                'python':     { icon: '🐍', color: 'b' },
-                'javascript': { icon: '⚡', color: 'a' },
-                'typescript': { icon: '⚡', color: 'b' },
-                'c++':        { icon: '⚙️', color: 'c' },
-                'c':          { icon: '⚙️', color: 'c' },
-                'go':         { icon: '🔷', color: 'b' },
-                'rust':       { icon: '🦀', color: 'r' },
-                'java':       { icon: '☕', color: 'r' },
-                'php':        { icon: '🌐', color: 'g' },
-                'shell':      { icon: '🖥️', color: 'g' },
-                'html':       { icon: '🌐', color: 'a' },
-                'css':        { icon: '🎨', color: 'c' },
+                'python': { icon: '🐍', color: 'b' }, 'javascript': { icon: '⚡', color: 'a' },
+                'typescript': { icon: '⚡', color: 'b' }, 'c++': { icon: '⚙️', color: 'c' },
+                'c': { icon: '⚙️', color: 'c' }, 'go': { icon: '🔷', color: 'b' },
+                'rust': { icon: '🦀', color: 'r' }, 'java': { icon: '☕', color: 'r' },
+                'php': { icon: '🌐', color: 'g' }, 'shell': { icon: '🖥️', color: 'g' },
+                'html': { icon: '🌐', color: 'a' }, 'css': { icon: '🎨', color: 'c' },
             };
             const defaultConfig = { icon: '📂', color: 'g' };
-
             try {
-                const resp = await fetch(
-                    `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`
-                );
+                const resp = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`);
                 if (!resp.ok) return;
                 const repos = await resp.json();
-
-                // Filter out forks and repos already displayed
                 const newRepos = repos.filter(repo => {
                     if (repo.fork) return false;
                     if (repo.name.toLowerCase() === GITHUB_USERNAME.toLowerCase()) return false;
@@ -1232,7 +734,6 @@
                     const repoName = repo.name.toLowerCase();
                     return !existingUrls.has(repoUrl) && !existingNames.has(repoName);
                 });
-
                 newRepos.forEach(repo => {
                     const lang = (repo.language || '').toLowerCase();
                     const cfg = langConfig[lang] || defaultConfig;
@@ -1247,7 +748,6 @@
                         });
                     }
                     if (tags.length === 0) tags.push('Code');
-
                     const card = document.createElement('a');
                     card.href = repo.html_url;
                     card.target = '_blank';
@@ -1264,13 +764,9 @@
                         <span class="project-arrow">↗</span>
                     `;
                     grid.appendChild(card);
-
-                    // Trigger reveal animation
                     observer.observe(card);
                 });
-            } catch (e) {
-                // Silently fail — static projects still show
-            }
+            } catch (e) {}
         })();
     </script>
 
