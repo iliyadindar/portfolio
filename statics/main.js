@@ -22,6 +22,7 @@ function closeMenu() {
     mobileMenu.classList.remove('open');
     document.body.style.overflow = '';
 }
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
 
 // Typing effect for terminal line
 const cmdEl = document.querySelector('.terminal-line .cmd');
