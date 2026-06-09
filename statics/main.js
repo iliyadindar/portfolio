@@ -1,3 +1,8 @@
+// Reveal animations are gated on this class so content stays visible without JS
+document.documentElement.classList.add('js');
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -13,20 +18,25 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    mobileMenu.classList.toggle('open');
-    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('active', open);
+    hamburger.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
 });
 function closeMenu() {
     hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
     mobileMenu.classList.remove('open');
     document.body.style.overflow = '';
 }
 mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+});
 
 // Typing effect for terminal line
 const cmdEl = document.querySelector('.terminal-line .cmd');
-if (cmdEl) {
+if (cmdEl && !prefersReducedMotion) {
     const text = cmdEl.textContent;
     cmdEl.textContent = '';
     let i = 0;
@@ -36,11 +46,28 @@ if (cmdEl) {
     setTimeout(type, 400);
 }
 
-// Nav background on scroll
-const nav = document.querySelector('nav');
-window.addEventListener('scroll', () => {
-    nav.style.borderBottomColor = window.scrollY > 50 ? 'var(--border-accent)' : 'var(--border)';
-});
+// Nav elevation on scroll
+const nav = document.querySelector('.site-nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+onScroll();
+window.addEventListener('scroll', onScroll, { passive: true });
+
+// Scroll spy — highlight the nav link of the section in view
+const navAnchors = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+const spyTargets = navAnchors
+    .map(a => document.getElementById(a.hash.slice(1)))
+    .filter(Boolean);
+const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navAnchors.forEach(a => a.classList.toggle('active', a.hash === `#${entry.target.id}`));
+    });
+}, { rootMargin: '-35% 0px -55% 0px' });
+spyTargets.forEach(sec => spy.observe(sec));
+
+// Footer year
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 // Auto-crawl GitHub repos and add missing projects
 (async function loadGitHubProjects() {
@@ -74,13 +101,6 @@ window.addEventListener('scroll', () => {
     };
     const defaultConfig = { icon: '📂', color: 'g' };
 
-    // Strict sanitize: escapes any string to safe HTML entities
-    function sanitize(str) {
-        const div = document.createElement('div');
-        div.textContent = String(str ?? '');
-        return div.innerHTML;
-    }
-
     // Build card using DOM APIs only — zero innerHTML with external data
     function createProjectCard(repo, cfg, desc, tags) {
         const card = document.createElement('a');
@@ -91,7 +111,8 @@ window.addEventListener('scroll', () => {
 
         // Icon
         const iconDiv = document.createElement('div');
-        iconDiv.className = `project-icon ${sanitize(cfg.color)}`;
+        iconDiv.className = `project-icon ${cfg.color}`;
+        iconDiv.setAttribute('aria-hidden', 'true');
         iconDiv.textContent = cfg.icon;
 
         // Info wrapper
@@ -121,6 +142,7 @@ window.addEventListener('scroll', () => {
         // Arrow
         const arrow = document.createElement('span');
         arrow.className = 'project-arrow';
+        arrow.setAttribute('aria-hidden', 'true');
         arrow.textContent = '↗';
 
         card.appendChild(iconDiv);
@@ -143,6 +165,12 @@ window.addEventListener('scroll', () => {
             return !existingUrls.has(repoUrl) && !existingNames.has(repoName);
         });
 
+        // Most-starred first, then most recently updated
+        newRepos.sort((a, b) =>
+            (b.stargazers_count || 0) - (a.stargazers_count || 0) ||
+            new Date(b.updated_at) - new Date(a.updated_at)
+        );
+
         newRepos.forEach(repo => {
             const lang = (repo.language || '').toLowerCase();
             const cfg = langConfig[lang] || defaultConfig;
@@ -157,6 +185,7 @@ window.addEventListener('scroll', () => {
                 });
             }
             if (tags.length === 0) tags.push('Code');
+            if (repo.stargazers_count > 0) tags.push(`★ ${repo.stargazers_count}`);
 
             const card = createProjectCard(repo, cfg, desc, tags);
             grid.appendChild(card);
