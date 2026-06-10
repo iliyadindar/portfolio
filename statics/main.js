@@ -46,9 +46,16 @@ if (cmdEl && !prefersReducedMotion) {
     setTimeout(type, 400);
 }
 
-// Nav elevation on scroll
+// Nav elevation + scroll progress bar
 const nav = document.querySelector('.site-nav');
-const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+const progressBar = document.querySelector('.scroll-progress');
+const onScroll = () => {
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+    if (progressBar) {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        progressBar.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
+    }
+};
 onScroll();
 window.addEventListener('scroll', onScroll, { passive: true });
 
@@ -69,7 +76,7 @@ spyTargets.forEach(sec => spy.observe(sec));
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// Auto-crawl GitHub repos and add missing projects
+// Auto-crawl GitHub repos: star badges for every repo card + cards for missing repos
 (async function loadGitHubProjects() {
     const GITHUB_USERNAME = 'iliyadindar';
     const grid = document.querySelector('.projects-grid');
@@ -85,23 +92,48 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         if (nameEl) existingNames.add(nameEl.textContent.trim().toLowerCase());
     });
 
-    const langConfig = {
-        'python':     { icon: '🐍', color: 'b' },
-        'javascript': { icon: '⚡', color: 'a' },
-        'typescript': { icon: '⚡', color: 'b' },
-        'c++':        { icon: '⚙️', color: 'c' },
-        'c':          { icon: '⚙️', color: 'c' },
-        'go':         { icon: '🔷', color: 'b' },
-        'rust':       { icon: '🦀', color: 'r' },
-        'java':       { icon: '☕', color: 'r' },
-        'php':        { icon: '🌐', color: 'g' },
-        'shell':      { icon: '🖥️', color: 'g' },
-        'html':       { icon: '🌐', color: 'a' },
-        'css':        { icon: '🎨', color: 'c' },
+    // Static icon markup only — never interpolate external data into these strings
+    const strokeIcon = (body) =>
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+    const ICONS = {
+        terminal: strokeIcon('<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>'),
+        code:     strokeIcon('<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>'),
+        cpu:      strokeIcon('<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>'),
+        zap:      strokeIcon('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'),
+        globe:    strokeIcon('<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'),
+        folder:   strokeIcon('<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>'),
     };
-    const defaultConfig = { icon: '📂', color: 'g' };
+    const STAR_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
 
-    // Build card using DOM APIs only — zero innerHTML with external data
+    const langConfig = {
+        'python':     { icon: ICONS.terminal, color: 'b' },
+        'javascript': { icon: ICONS.zap, color: 'a' },
+        'typescript': { icon: ICONS.zap, color: 'b' },
+        'c++':        { icon: ICONS.cpu, color: 'c' },
+        'c':          { icon: ICONS.cpu, color: 'c' },
+        'go':         { icon: ICONS.code, color: 'b' },
+        'rust':       { icon: ICONS.cpu, color: 'r' },
+        'java':       { icon: ICONS.code, color: 'r' },
+        'php':        { icon: ICONS.globe, color: 'g' },
+        'shell':      { icon: ICONS.terminal, color: 'g' },
+        'html':       { icon: ICONS.globe, color: 'a' },
+        'css':        { icon: ICONS.code, color: 'c' },
+    };
+    const defaultConfig = { icon: ICONS.folder, color: 'g' };
+
+    // Star badge next to the project title; count is inserted as a text node
+    function addStarBadge(card, count) {
+        const h3 = card.querySelector('.project-info h3');
+        if (!h3 || h3.querySelector('.repo-stars')) return;
+        const badge = document.createElement('span');
+        badge.className = 'repo-stars';
+        badge.title = `${count} stars on GitHub`;
+        badge.innerHTML = STAR_ICON;
+        badge.appendChild(document.createTextNode(String(count)));
+        h3.appendChild(badge);
+    }
+
+    // Build card using DOM APIs — external data only ever set via textContent
     function createProjectCard(repo, cfg, desc, tags) {
         const card = document.createElement('a');
         card.href = repo.html_url;
@@ -113,7 +145,7 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         const iconDiv = document.createElement('div');
         iconDiv.className = `project-icon ${cfg.color}`;
         iconDiv.setAttribute('aria-hidden', 'true');
-        iconDiv.textContent = cfg.icon;
+        iconDiv.innerHTML = cfg.icon;
 
         // Info wrapper
         const infoDiv = document.createElement('div');
@@ -157,6 +189,15 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         if (!resp.ok) return;
         const repos = await resp.json();
 
+        // Live star counts for the hardcoded cards that link to a known repo
+        const repoByUrl = new Map();
+        repos.forEach(r => repoByUrl.set(r.html_url.toLowerCase().replace(/\/$/, ''), r));
+        existingCards.forEach(card => {
+            const href = (card.getAttribute('href') || '').toLowerCase().replace(/\/$/, '');
+            const repo = repoByUrl.get(href);
+            if (repo) addStarBadge(card, repo.stargazers_count || 0);
+        });
+
         const newRepos = repos.filter(repo => {
             if (repo.fork) return false;
             if (repo.name.toLowerCase() === GITHUB_USERNAME.toLowerCase()) return false;
@@ -185,9 +226,9 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
                 });
             }
             if (tags.length === 0) tags.push('Code');
-            if (repo.stargazers_count > 0) tags.push(`★ ${repo.stargazers_count}`);
 
             const card = createProjectCard(repo, cfg, desc, tags);
+            addStarBadge(card, repo.stargazers_count || 0);
             grid.appendChild(card);
             observer.observe(card);
         });
