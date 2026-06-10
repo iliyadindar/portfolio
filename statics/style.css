@@ -391,7 +391,13 @@ body {
     background: var(--green-dim);
 }
 
-.hero-socials { display: flex; gap: 8px; margin-left: 6px; }
+/* social icons live on their own centered row under the CTAs */
+.hero-socials {
+    display: flex; gap: 14px;
+    flex-basis: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
 .btn-icon {
     display: inline-flex; align-items: center; justify-content: center;
     width: 44px; height: 44px;
@@ -1033,7 +1039,7 @@ html.gsap .reveal { transition: none; }
        the social icons sit on their own row below */
     .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 36px; }
     .hero-actions .btn { width: 100%; justify-content: center; padding: 14px 20px; }
-    .hero-socials { margin-left: 0; margin-top: 16px; gap: 14px; justify-content: flex-start; }
+    .hero-socials { margin-top: 14px; }
 
     .projects-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 10px; }
