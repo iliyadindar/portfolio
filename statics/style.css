@@ -1008,17 +1008,38 @@ html.gsap .reveal { transition: none; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
     section { padding: 80px 0; }
-    .hero { padding-top: 110px; }
-    .cta-banner { padding: 34px 28px; }
     .scroll-cue { display: none; }
+    .cta-banner { padding: 34px 28px; }
 }
 
-@media (max-width: 540px) {
+/* Tall viewports (phones, "desktop site" phones, portrait tablets):
+   top-align the hero so content clears the fixed nav and there's no
+   cavernous empty space from vertical centering. */
+@media (max-aspect-ratio: 3/4) {
+    .hero {
+        align-items: flex-start;
+        min-height: auto;
+        padding: 128px 0 72px;
+    }
+}
+
+@media (max-width: 600px) {
     .container { padding: 0 20px; }
-    .hero-actions { gap: 10px; }
-    .hero-socials { margin-left: 0; }
+    .hero { padding: 120px 0 64px; }
+    .hero-name { font-size: clamp(2.8rem, 12.5vw, 4.4rem); margin-bottom: 22px; }
+    .hero-tagline { font-size: 1.16rem; }
+    .hero-desc { margin-bottom: 30px; }
+    /* stack the CTAs full-width so labels never wrap and nothing crowds;
+       the social icons sit on their own row below */
+    .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 36px; }
+    .hero-actions .btn { width: 100%; justify-content: center; padding: 14px 20px; }
+    .hero-socials { margin-left: 0; margin-top: 6px; justify-content: flex-start; }
+
     .projects-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 10px; }
+    .writeup-card { padding: 30px 22px; }
+    .writeup-card .wu-read { white-space: normal; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 
 /* ============ Reduced motion ============ */
