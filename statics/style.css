@@ -57,9 +57,9 @@
     --text: #f5f5f7;
     --text-dim: #a1a1a6;
     --text-muted: #6e6e73;
-    --accent: #0a84ff;                       /* Apple blue */
-    --accent-dim: rgba(10, 132, 255, 0.14);
-    --accent-glow: rgba(10, 132, 255, 0.08);
+    --accent: #30d158;                       /* brand green (Apple system green) */
+    --accent-dim: rgba(48, 209, 88, 0.14);
+    --accent-glow: rgba(48, 209, 88, 0.08);
     --sysgreen: #30d158;
     --sysgreen-dim: rgba(48, 209, 88, 0.12);
     --blue: #0a84ff;
@@ -72,8 +72,8 @@
     --cyan-dim: rgba(100, 210, 255, 0.12);
     --purple: #bf5af2;
     --purple-dim: rgba(191, 90, 242, 0.12);
-    /* the "intelligence" gradient — blue → violet → pink */
-    --grad-ai: linear-gradient(100deg, #0a84ff 0%, #bf5af2 52%, #ff375f 100%);
+    /* brand gradient — emerald → teal → cyan */
+    --grad-ai: linear-gradient(100deg, #30d158 0%, #2dd4bf 52%, #64d2ff 100%);
     --font-sans: 'Outfit', system-ui, sans-serif;
     --font-mono: 'Fira Code', ui-monospace, 'SF Mono', monospace;
     --radius: 24px;
@@ -95,7 +95,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: rgba(10, 132, 255, 0.35); color: #fff; }
+::selection { background: rgba(48, 209, 88, 0.3); color: #f2fff6; }
 
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -106,7 +106,7 @@ body {
 
 .skip-link {
     position: fixed; top: -60px; left: 16px; z-index: 300;
-    background: var(--accent); color: #fff;
+    background: var(--accent); color: #03180b;
     padding: 10px 18px; border-radius: 10px;
     font-weight: 600; text-decoration: none; font-size: 0.9rem;
     transition: top 0.2s var(--ease-out);
@@ -134,20 +134,20 @@ body {
 .cb-aurora { filter: blur(100px); opacity: 0.45; }
 .cb-aurora.ca1 {
     background:
-        radial-gradient(38% 30% at 20% 24%, rgba(10, 132, 255, 0.16), transparent 70%),
-        radial-gradient(30% 26% at 85% 65%, rgba(10, 132, 255, 0.08), transparent 70%);
+        radial-gradient(38% 30% at 20% 24%, rgba(48, 209, 88, 0.15), transparent 70%),
+        radial-gradient(30% 26% at 85% 65%, rgba(48, 209, 88, 0.07), transparent 70%);
     animation: aurora-drift 26s ease-in-out infinite alternate;
 }
 .cb-aurora.ca2 {
     background:
-        radial-gradient(34% 30% at 78% 18%, rgba(191, 90, 242, 0.13), transparent 70%),
-        radial-gradient(28% 24% at 12% 78%, rgba(94, 92, 230, 0.11), transparent 70%);
+        radial-gradient(34% 30% at 78% 18%, rgba(45, 212, 191, 0.12), transparent 70%),
+        radial-gradient(28% 24% at 12% 78%, rgba(10, 132, 255, 0.09), transparent 70%);
     animation: aurora-drift 34s ease-in-out infinite alternate-reverse;
 }
 .cb-aurora.ca3 {
     background:
-        radial-gradient(40% 34% at 55% 90%, rgba(255, 55, 95, 0.07), transparent 70%),
-        radial-gradient(24% 22% at 40% 40%, rgba(100, 210, 255, 0.05), transparent 70%);
+        radial-gradient(40% 34% at 55% 90%, rgba(100, 210, 255, 0.07), transparent 70%),
+        radial-gradient(24% 22% at 40% 40%, rgba(48, 209, 88, 0.05), transparent 70%);
     animation: aurora-drift 42s ease-in-out infinite alternate;
 }
 @keyframes aurora-drift {
@@ -298,13 +298,13 @@ body {
 .hb-layer { position: absolute; inset: 0; will-change: transform; }
 .hb-aurora { filter: blur(70px); }
 .hb-aurora.ha1 {
-    background: radial-gradient(46% 40% at 50% 18%, rgba(10, 132, 255, 0.15), transparent 70%);
+    background: radial-gradient(46% 40% at 50% 18%, rgba(48, 209, 88, 0.14), transparent 70%);
 }
 .hb-aurora.ha2 {
-    background: radial-gradient(40% 36% at 26% 70%, rgba(191, 90, 242, 0.11), transparent 70%);
+    background: radial-gradient(40% 36% at 26% 70%, rgba(45, 212, 191, 0.10), transparent 70%);
 }
 .hb-aurora.ha3 {
-    background: radial-gradient(46% 40% at 74% 105%, rgba(255, 55, 95, 0.08), transparent 72%);
+    background: radial-gradient(46% 40% at 74% 105%, rgba(10, 132, 255, 0.08), transparent 72%);
 }
 .hb-rings {
     background:
@@ -416,15 +416,15 @@ body {
 .btn svg { width: 17px; height: 17px; transition: transform 0.3s var(--ease-out); }
 .btn:hover svg { transform: translateX(3px); }
 
-/* Apple-style pills: solid blue primary, frosted glass secondary */
+/* Apple-style pills: solid green primary, frosted glass secondary */
 .btn-primary {
     background: var(--accent);
-    color: #fff;
+    color: #03180b;
 }
 .btn-primary:hover {
     transform: translateY(-1px);
-    background: #2792ff;
-    box-shadow: 0 8px 30px rgba(10, 132, 255, 0.35);
+    background: #46e06c;
+    box-shadow: 0 8px 30px rgba(48, 209, 88, 0.35);
 }
 
 .btn-outline {
@@ -441,10 +441,10 @@ body {
 
 /* social icons live on their own centered row under the CTAs */
 .hero-socials {
-    display: flex; gap: 18px;
+    display: flex; gap: 20px;
     flex-basis: 100%;
     justify-content: center;
-    margin-top: 12px;
+    margin-top: 34px; /* clear separation from the CTA pills */
 }
 /* minimal monochrome glyphs, like Apple's footer social row —
    44px invisible touch target, only the mark itself is visible */
@@ -943,8 +943,8 @@ section { padding: 110px 0; position: relative; }
 .cta-glow {
     position: absolute; inset: -40%;
     background:
-        radial-gradient(35% 45% at 20% 30%, rgba(10, 132, 255, 0.16), transparent 70%),
-        radial-gradient(30% 40% at 85% 70%, rgba(191, 90, 242, 0.13), transparent 70%);
+        radial-gradient(35% 45% at 20% 30%, rgba(48, 209, 88, 0.15), transparent 70%),
+        radial-gradient(30% 40% at 85% 70%, rgba(45, 212, 191, 0.12), transparent 70%);
     filter: blur(40px);
     animation: aurora-drift 18s ease-in-out infinite alternate;
     pointer-events: none;
@@ -1088,7 +1088,7 @@ html.gsap .reveal { transition: none; }
        the social icons sit on their own row below */
     .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 36px; }
     .hero-actions .btn { width: 100%; justify-content: center; padding: 14px 20px; }
-    .hero-socials { margin-top: 14px; }
+    .hero-socials { margin-top: 26px; }
 
     .projects-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 10px; }
