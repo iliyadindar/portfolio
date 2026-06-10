@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CSP allows analytics scripts without brittle per-load hashes and blocks inline event handlers. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com 'unsafe-inline'; script-src-attr 'none'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://region1.google-analytics.com; connect-src 'self' https://api.github.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://region1.google-analytics.com https://region1.analytics.google.com https://cloudflareinsights.com; frame-src https://www.googletagmanager.com; worker-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com 'unsafe-inline'; script-src-attr 'none'; style-src 'self'; font-src 'self'; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://region1.google-analytics.com; connect-src 'self' https://api.github.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://region1.google-analytics.com https://region1.analytics.google.com https://cloudflareinsights.com; frame-src https://www.googletagmanager.com; worker-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()">
@@ -27,11 +27,12 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-93853W5SBL"></script>
     <script src="/statics/gtag.js" defer></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Fonts are self-hosted (see style.css @font-face) so typography is identical for every visitor -->
+    <link rel="preload" href="/statics/fonts/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/statics/fonts/fira-code-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/statics/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="/statics/style.css?v=20260610c">
+    <link rel="stylesheet" href="/statics/style.css?v=20260610d">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -610,7 +611,7 @@
 
     <script src="/statics/gsap.min.js?v=3.12.7" defer></script>
     <script src="/statics/ScrollTrigger.min.js?v=3.12.7" defer></script>
-    <script src="/statics/main.js?v=20260610c" defer></script>
+    <script src="/statics/main.js?v=20260610d" defer></script>
 
 </body>
 </html>
