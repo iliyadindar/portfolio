@@ -153,7 +153,11 @@ if (gsapActive) {
         onEnter: batch => gsap.to(batch, {
             opacity: 1, y: 0,
             duration: 0.9, ease: 'power3.out',
-            stagger: 0.09, overwrite: true
+            // cap total stagger at 0.5s so a fast jump to the bottom
+            // (which lands dozens of elements in one batch) never leaves
+            // content invisible for seconds
+            stagger: Math.min(0.09, 0.5 / batch.length),
+            overwrite: true
         })
     });
 

@@ -40,38 +40,6 @@
     src: url('/statics/fonts/fira-code-latin-ext-wght-normal.woff2') format('woff2-variations');
     unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
-@font-face {
-    font-family: 'Instrument Serif';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('/statics/fonts/instrument-serif-latin-400-normal.woff2') format('woff2');
-    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-}
-@font-face {
-    font-family: 'Instrument Serif';
-    font-style: italic;
-    font-weight: 400;
-    font-display: swap;
-    src: url('/statics/fonts/instrument-serif-latin-400-italic.woff2') format('woff2');
-    unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-}
-@font-face {
-    font-family: 'Instrument Serif';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('/statics/fonts/instrument-serif-latin-ext-400-normal.woff2') format('woff2');
-    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
-}
-@font-face {
-    font-family: 'Instrument Serif';
-    font-style: italic;
-    font-weight: 400;
-    font-display: swap;
-    src: url('/statics/fonts/instrument-serif-latin-ext-400-italic.woff2') format('woff2');
-    unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
-}
 
 /* ============ Reset & tokens ============ */
 *, *::before, *::after {
@@ -102,7 +70,6 @@
     --purple: #a78bfa;
     --purple-dim: rgba(167, 139, 250, 0.1);
     --font-sans: 'Outfit', system-ui, sans-serif;
-    --font-serif: 'Instrument Serif', Georgia, serif;
     --font-mono: 'Fira Code', ui-monospace, 'SF Mono', monospace;
     --radius: 18px;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -397,12 +364,15 @@ body {
     line-height: 1.45;
     margin-bottom: 18px;
 }
+/* emphasis stays in the same typeface — weight + gradient, no font switch */
 .hero-tagline em {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400; /* Instrument Serif ships only at 400 */
-    font-size: 1.12em;
-    color: var(--text);
+    font-style: normal;
+    font-weight: 600;
+    background: linear-gradient(112deg, var(--green) 5%, var(--cyan) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .hero-title {
@@ -1035,9 +1005,7 @@ footer {
     transition: color 0.3s;
 }
 .footer-giant em {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
+    font-style: normal;
     background: linear-gradient(112deg, var(--green), var(--cyan));
     -webkit-background-clip: text;
     background-clip: text;
