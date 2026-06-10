@@ -2,17 +2,209 @@
 document.documentElement.classList.add('js');
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const gsapActive = !prefersReducedMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
-// Scroll reveal
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => entry.target.classList.add('visible'), i * 50);
-            observer.unobserve(entry.target);
-        }
+/* ════════════════════════════════════════════════════════
+   Reveal system
+   GSAP path: ScrollTrigger-batched staggers.
+   Fallback:  IntersectionObserver + .visible class.
+   Either way, revealEl() registers late-added cards too.
+   ════════════════════════════════════════════════════════ */
+let revealEl;
+let fallbackObserver = null;
+
+if (!gsapActive) {
+    fallbackObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 50);
+                fallbackObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => fallbackObserver.observe(el));
+    revealEl = (el) => fallbackObserver.observe(el);
+}
+
+/* ════════════════════════════════════════════════════════
+   GSAP — cinematic scroll experience
+   ════════════════════════════════════════════════════════ */
+if (gsapActive) {
+    gsap.registerPlugin(ScrollTrigger);
+    document.documentElement.classList.add('gsap');
+
+    /* ---- text splitting (keeps accessible names via aria-label) ---- */
+    function splitChars(el) {
+        const label = el.textContent.replace(/\s+/g, ' ').trim();
+        el.setAttribute('aria-label', label);
+        const wrap = (node) => {
+            [...node.childNodes].forEach(child => {
+                if (child.nodeType === Node.TEXT_NODE) {
+                    const frag = document.createDocumentFragment();
+                    for (const ch of child.textContent) {
+                        if (ch.trim() === '') {
+                            frag.appendChild(document.createTextNode(ch));
+                        } else {
+                            const s = document.createElement('span');
+                            s.className = 'ch';
+                            s.textContent = ch;
+                            frag.appendChild(s);
+                        }
+                    }
+                    child.replaceWith(frag);
+                } else if (child.nodeType === Node.ELEMENT_NODE) {
+                    wrap(child);
+                }
+            });
+        };
+        wrap(el);
+        [...el.children].forEach(c => c.setAttribute('aria-hidden', 'true'));
+        return el.querySelectorAll('.ch');
+    }
+
+    function splitWords(el) {
+        const label = el.textContent.replace(/\s+/g, ' ').trim();
+        el.setAttribute('aria-label', label);
+        el.textContent = '';
+        label.split(' ').forEach((w, i, arr) => {
+            const s = document.createElement('span');
+            s.className = 'w';
+            s.textContent = w;
+            s.setAttribute('aria-hidden', 'true');
+            el.appendChild(s);
+            if (i < arr.length - 1) el.appendChild(document.createTextNode(' '));
+        });
+        return el.querySelectorAll('.w');
+    }
+
+    /* ---- hero intro (plays on load) ---- */
+    const heroName = document.querySelector('.hero-name[data-split]');
+    const chars = heroName ? splitChars(heroName) : [];
+
+    const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    intro
+        .from('.terminal-line', { y: 18, opacity: 0, duration: 0.6 }, 0.1)
+        .from(chars, { yPercent: 110, opacity: 0, rotate: 5, duration: 1.1, stagger: 0.04 }, 0.25)
+        .from('.hero-tagline', { y: 28, opacity: 0, duration: 0.9 }, '-=0.65')
+        .from('.hero-title', { y: 18, opacity: 0, duration: 0.7 }, '-=0.65')
+        .from('.hero-desc', { y: 18, opacity: 0, duration: 0.7 }, '-=0.55')
+        .from('.hero-actions > *', { y: 22, opacity: 0, duration: 0.7, stagger: 0.08 }, '-=0.5')
+        .from('.status-bar .status-item', { y: 14, opacity: 0, duration: 0.5, stagger: 0.07 }, '-=0.45')
+        .from('.scroll-cue', { opacity: 0, duration: 0.8 }, '-=0.2');
+
+    /* ---- pinned cinematic hero: layers part at different depths ---- */
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 881px)', () => {
+        const heroScrub = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: '+=60%',
+                scrub: 0.6,
+                pin: true,
+                anticipatePin: 1
+            },
+            defaults: { ease: 'none' }
+        });
+        heroScrub
+            .to('.hero-inner', { yPercent: -12, scale: 0.95, opacity: 0 }, 0)
+            .to('.scroll-cue', { opacity: 0 }, 0)
+            .to('.hb-rings', { scale: 1.3, opacity: 0.25 }, 0);
+        gsap.utils.toArray('.hero [data-hero-depth]').forEach(layer => {
+            const depth = parseFloat(layer.dataset.heroDepth) || 0.5;
+            heroScrub.to(layer, { yPercent: -(1 - depth) * 90, scale: 1 + (1 - depth) * 0.3 }, 0);
+        });
+        return () => {}; // matchMedia cleans up its own triggers
     });
-}, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    mm.add('(max-width: 880px)', () => {
+        // lighter, unpinned parallax on small screens
+        gsap.to('.hero-inner', {
+            yPercent: -8, opacity: 0.15, ease: 'none',
+            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 }
+        });
+    });
+
+    /* ---- global layered backdrop drift (parallax by data-depth) ---- */
+    gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
+        const depth = parseFloat(layer.dataset.depth) || 0;
+        gsap.to(layer, {
+            y: () => -depth * 400,
+            ease: 'none',
+            scrollTrigger: { start: 0, end: 'max', scrub: 1.2, invalidateOnRefresh: true }
+        });
+    });
+
+    /* ---- section titles: word-by-word rise ---- */
+    gsap.utils.toArray('[data-split-words]').forEach(title => {
+        const words = splitWords(title);
+        gsap.set(title, { opacity: 1, y: 0 }); // override .reveal initial state
+        gsap.from(words, {
+            yPercent: 115, opacity: 0, rotate: 3,
+            duration: 0.85, ease: 'power4.out', stagger: 0.07,
+            scrollTrigger: { trigger: title, start: 'top 86%', once: true }
+        });
+    });
+
+    /* ---- batched card / block reveals ---- */
+    ScrollTrigger.batch('.reveal:not([data-split-words])', {
+        start: 'top 88%',
+        once: true,
+        onEnter: batch => gsap.to(batch, {
+            opacity: 1, y: 0,
+            duration: 0.9, ease: 'power3.out',
+            stagger: 0.09, overwrite: true
+        })
+    });
+
+    revealEl = (el) => {
+        gsap.to(el, {
+            opacity: 1, y: 0,
+            duration: 0.9, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+        });
+    };
+
+    /* ---- stat counters ---- */
+    gsap.utils.toArray('.stat-num[data-count]').forEach(el => {
+        const target = parseFloat(el.dataset.count);
+        const suffix = el.dataset.suffix || '';
+        if (isNaN(target)) return;
+        const state = { v: 0 };
+        el.textContent = '0' + suffix;
+        ScrollTrigger.create({
+            trigger: el, start: 'top 88%', once: true,
+            onEnter: () => gsap.to(state, {
+                v: target, duration: 1.8, ease: 'power2.out',
+                onUpdate: () => { el.textContent = Math.round(state.v) + suffix; }
+            })
+        });
+    });
+
+    /* ---- marquee: constant roll, accelerates with scroll velocity ---- */
+    const track = document.querySelector('[data-marquee]');
+    if (track) {
+        track.style.animation = 'none'; // GSAP replaces the CSS fallback loop
+        const roll = gsap.to(track, { xPercent: -50, ease: 'none', duration: 30, repeat: -1 });
+        ScrollTrigger.create({
+            onUpdate: (self) => {
+                const boost = gsap.utils.clamp(1, 6, Math.abs(self.getVelocity()) / 300);
+                roll.timeScale(boost);
+                gsap.to(roll, { timeScale: 1, duration: 1.2, ease: 'power2.out', overwrite: true });
+            }
+        });
+    }
+
+    /* ---- scroll progress bar ---- */
+    gsap.to('.scroll-progress', {
+        scaleX: 1, ease: 'none',
+        scrollTrigger: { start: 0, end: 'max', scrub: 0.3 }
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   Core UI (independent of GSAP)
+   ════════════════════════════════════════════════════════ */
 
 // Hamburger menu
 const hamburger = document.getElementById('hamburger');
@@ -43,15 +235,15 @@ if (cmdEl && !prefersReducedMotion) {
     const type = () => {
         if (i < text.length) { cmdEl.textContent += text[i]; i++; setTimeout(type, 80 + Math.random() * 60); }
     };
-    setTimeout(type, 400);
+    setTimeout(type, 500);
 }
 
-// Nav elevation + scroll progress bar
+// Nav elevation (+ scroll progress fallback when GSAP is unavailable)
 const nav = document.querySelector('.site-nav');
 const progressBar = document.querySelector('.scroll-progress');
 const onScroll = () => {
     nav.classList.toggle('scrolled', window.scrollY > 24);
-    if (progressBar) {
+    if (progressBar && !gsapActive) {
         const max = document.documentElement.scrollHeight - window.innerHeight;
         progressBar.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
     }
@@ -230,7 +422,9 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
             const card = createProjectCard(repo, cfg, desc, tags);
             addStarBadge(card, repo.stargazers_count || 0);
             grid.appendChild(card);
-            observer.observe(card);
+            if (revealEl) revealEl(card);
         });
+
+        if (gsapActive && newRepos.length) ScrollTrigger.refresh();
     } catch (e) {}
 })();
