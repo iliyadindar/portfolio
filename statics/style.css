@@ -207,14 +207,6 @@ body {
 .nav-links a:hover { color: var(--text); background: rgba(125, 150, 200, 0.08); }
 .nav-links a.active { color: var(--green); background: var(--green-dim); }
 
-.scroll-progress {
-    position: absolute; left: 0; right: 0; bottom: -1px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--green), var(--cyan), var(--purple));
-    transform-origin: left;
-    transform: scaleX(0);
-}
-
 .hamburger {
     display: none;
     flex-direction: column; gap: 5px;

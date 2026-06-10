@@ -195,11 +195,6 @@ if (gsapActive) {
         });
     }
 
-    /* ---- scroll progress bar ---- */
-    gsap.to('.scroll-progress', {
-        scaleX: 1, ease: 'none',
-        scrollTrigger: { start: 0, end: 'max', scrub: 0.3 }
-    });
 }
 
 /* ════════════════════════════════════════════════════════
@@ -238,15 +233,10 @@ if (cmdEl && !prefersReducedMotion) {
     setTimeout(type, 500);
 }
 
-// Nav elevation (+ scroll progress fallback when GSAP is unavailable)
+// Nav elevation
 const nav = document.querySelector('.site-nav');
-const progressBar = document.querySelector('.scroll-progress');
 const onScroll = () => {
     nav.classList.toggle('scrolled', window.scrollY > 24);
-    if (progressBar && !gsapActive) {
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        progressBar.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
-    }
 };
 onScroll();
 window.addEventListener('scroll', onScroll, { passive: true });
