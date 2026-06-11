@@ -21,6 +21,7 @@ if (!gsapActive) {
 
 if (gsapActive) {
     gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
     document.documentElement.classList.add('gsap');
 
     function splitChars(el) {
