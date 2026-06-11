@@ -3,6 +3,8 @@ document.documentElement.classList.add('js');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const gsapActive = !prefersReducedMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
+function initPortfolio() {
+
 let revealEl;
 let fallbackObserver = null;
 
@@ -81,36 +83,49 @@ if (gsapActive) {
         .from('.status-bar .status-item', { y: 14, opacity: 0, duration: 0.5, stagger: 0.07 }, '-=0.45')
         .from('.scroll-cue', { opacity: 0, duration: 0.8 }, '-=0.2');
 
-    const mm = gsap.matchMedia();
-    mm.add('(min-width: 881px)', () => {
-        const heroScrub = gsap.timeline({
-            scrollTrigger: {
-                trigger: '.hero',
-                start: 'top top',
-                end: '+=60%',
-                scrub: 0.6,
-                pin: true,
-                anticipatePin: 1
-            },
-            defaults: { ease: 'none' }
+    const heroEl = document.querySelector('.hero');
+    if (heroEl) {
+        const mm = gsap.matchMedia();
+        mm.add('(min-width: 881px)', () => {
+            const heroScrub = gsap.timeline({
+                scrollTrigger: {
+                    trigger: heroEl,
+                    start: 'top top',
+                    end: '+=60%',
+                    scrub: 0.6,
+                    pin: true,
+                    anticipatePin: 1
+                },
+                defaults: { ease: 'none' }
+            });
+            heroScrub
+                .to('.hero-inner', { yPercent: -12, scale: 0.95 }, 0)
+                .to('.scroll-cue', { opacity: 0 }, 0)
+                .to('.hb-rings', { scale: 1.3, opacity: 0.25 }, 0);
+            gsap.utils.toArray('.hero [data-hero-depth]').forEach(layer => {
+                const depth = parseFloat(layer.dataset.heroDepth) || 0.5;
+                heroScrub.to(layer, { yPercent: -(1 - depth) * 90, scale: 1 + (1 - depth) * 0.3 }, 0);
+            });
+            gsap.fromTo('.hero-inner', { opacity: 1 }, {
+                opacity: 0, ease: 'power1.in',
+                scrollTrigger: {
+                    trigger: heroEl,
+                    start: 'top top',
+                    end: () => '+=' + (window.innerHeight * 0.6 + heroEl.offsetHeight),
+                    scrub: 0.6,
+                    invalidateOnRefresh: true
+                }
+            });
+            return () => {};
         });
-        heroScrub
-            .to('.hero-inner', { yPercent: -12, scale: 0.95, opacity: 0 }, 0)
-            .to('.scroll-cue', { opacity: 0 }, 0)
-            .to('.hb-rings', { scale: 1.3, opacity: 0.25 }, 0);
-        gsap.utils.toArray('.hero [data-hero-depth]').forEach(layer => {
-            const depth = parseFloat(layer.dataset.heroDepth) || 0.5;
-            heroScrub.to(layer, { yPercent: -(1 - depth) * 90, scale: 1 + (1 - depth) * 0.3 }, 0);
-        });
-        return () => {};
-    });
 
-    mm.add('(max-width: 880px)', () => {
-        gsap.to('.hero-inner', {
-            yPercent: -8, opacity: 0.15, ease: 'none',
-            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 }
+        mm.add('(max-width: 880px)', () => {
+            gsap.to('.hero-inner', {
+                yPercent: -8, opacity: 0.15, ease: 'none',
+                scrollTrigger: { trigger: heroEl, start: 'top top', end: 'bottom top', scrub: 0.6 }
+            });
         });
-    });
+    }
 
     gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
         const depth = parseFloat(layer.dataset.depth) || 0;
@@ -209,7 +224,7 @@ if (gsapActive) {
             trigger: tlStartEl,
             start: 'top center',
             endTrigger: tlEndEl,
-            end: 'bottom center',
+            end: 'bottom 70%',
             scrub: 0.4,
             invalidateOnRefresh: true
         };
@@ -430,3 +445,11 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         if (gsapActive && newRepos.length) ScrollTrigger.refresh();
     } catch (e) {}
 })();
+
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPortfolio, { once: true });
+} else {
+    initPortfolio();
+}
