@@ -219,7 +219,7 @@ if (gsapActive) {
             trigger: tlStartEl,
             start: 'top center',
             endTrigger: tlEndEl,
-            end: 'bottom center',
+            end: 'bottom 70%',
             scrub: 0.4,
             invalidateOnRefresh: true
         };
