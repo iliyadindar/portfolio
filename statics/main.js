@@ -95,12 +95,22 @@ if (gsapActive) {
             defaults: { ease: 'none' }
         });
         heroScrub
-            .to('.hero-inner', { yPercent: -12, scale: 0.95, opacity: 0 }, 0)
+            .to('.hero-inner', { yPercent: -12, scale: 0.95 }, 0)
             .to('.scroll-cue', { opacity: 0 }, 0)
             .to('.hb-rings', { scale: 1.3, opacity: 0.25 }, 0);
         gsap.utils.toArray('.hero [data-hero-depth]').forEach(layer => {
             const depth = parseFloat(layer.dataset.heroDepth) || 0.5;
             heroScrub.to(layer, { yPercent: -(1 - depth) * 90, scale: 1 + (1 - depth) * 0.3 }, 0);
+        });
+        gsap.fromTo('.hero-inner', { opacity: 1 }, {
+            opacity: 0, ease: 'power1.in',
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: () => '+=' + (window.innerHeight * 0.6 + document.querySelector('.hero').offsetHeight),
+                scrub: 0.6,
+                invalidateOnRefresh: true
+            }
         });
         return () => {};
     });
