@@ -1,13 +1,3 @@
-/* ════════════════════════════════════════════════════════════════
-   Iliya Dindar — cinematic portfolio
-   Layers: fixed aurora/grid/star backdrop (GSAP parallax) → content
-   ════════════════════════════════════════════════════════════════ */
-
-/* ============ Self-hosted fonts ============
-   Variable fonts served same-origin so every visitor gets identical
-   typography — no Google Fonts dependency, no partial loads, and the
-   latin-ext subsets cover Turkish glyphs (ş, ı) so words like
-   "Nişantaşı" never fall back to a system font mid-word. */
 @font-face {
     font-family: 'Outfit';
     font-style: normal;
@@ -41,13 +31,12 @@
     unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
 }
 
-/* ============ Reset & tokens ============ */
 *, *::before, *::after {
     margin: 0; padding: 0; box-sizing: border-box;
 }
 
 :root {
-    /* Apple dark-mode product-page palette */
+
     --bg: #000000;
     --bg-elevated: #101012;
     --bg-card: rgba(22, 22, 26, 0.72);
@@ -57,7 +46,7 @@
     --text: #f5f5f7;
     --text-dim: #a1a1a6;
     --text-muted: #6e6e73;
-    --accent: #30d158;                       /* brand green (Apple system green) */
+    --accent: #30d158;
     --accent-dim: rgba(48, 209, 88, 0.14);
     --accent-glow: rgba(48, 209, 88, 0.08);
     --sysgreen: #30d158;
@@ -72,7 +61,7 @@
     --cyan-dim: rgba(100, 210, 255, 0.12);
     --purple: #bf5af2;
     --purple-dim: rgba(191, 90, 242, 0.12);
-    /* brand gradient — emerald → teal → cyan */
+
     --grad-ai: linear-gradient(100deg, #30d158 0%, #2dd4bf 52%, #64d2ff 100%);
     --font-sans: 'Outfit', system-ui, sans-serif;
     --font-mono: 'Fira Code', ui-monospace, 'SF Mono', monospace;
@@ -82,7 +71,7 @@
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 84px; /* keep anchored sections clear of the fixed nav */
+    scroll-padding-top: 84px;
     scrollbar-color: var(--border-accent) var(--bg);
 }
 
@@ -119,10 +108,6 @@ body {
     padding: 0 28px;
 }
 
-/* ════════════════════════════════════════════════════════════════
-   LAYERED CINEMATIC BACKDROP
-   Fixed full-bleed layers; GSAP drifts each at its data-depth rate.
-   ════════════════════════════════════════════════════════════════ */
 .cine-bg {
     position: fixed; inset: -20% 0;
     z-index: -2;
@@ -155,10 +140,8 @@ body {
     to   { transform: translate3d(2.5%, 2.5%, 0) scale(1.08); }
 }
 
-/* grid retired in the product-page redesign — pure black canvas */
 .cb-grid { display: none; }
 
-/* star fields — two depths of tiny radial dots */
 .cb-stars {
     background-repeat: repeat;
     opacity: 0.5;
@@ -184,7 +167,6 @@ body {
     background: radial-gradient(120% 90% at 50% 30%, transparent 40%, rgba(0, 0, 0, 0.88) 100%);
 }
 
-/* film grain on top of everything */
 .grain {
     position: fixed; inset: -50%;
     z-index: 120;
@@ -201,7 +183,6 @@ body {
     100% { transform: translate(2%, 2%); }
 }
 
-/* ============ Navigation ============ */
 .site-nav {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 200;
@@ -282,9 +263,6 @@ body {
 }
 .mobile-menu a:hover { color: var(--accent); letter-spacing: 0.01em; }
 
-/* ════════════════════════════════════════════════════════════════
-   HERO — cinematic landing
-   ════════════════════════════════════════════════════════════════ */
 .hero {
     position: relative;
     min-height: 100svh;
@@ -293,7 +271,6 @@ body {
     overflow: hidden;
 }
 
-/* hero-local depth layers (pinned & scrubbed with the hero) */
 .hero-bg { position: absolute; inset: -12%; pointer-events: none; }
 .hb-layer { position: absolute; inset: 0; will-change: transform; }
 .hb-aurora { filter: blur(70px); }
@@ -313,7 +290,6 @@ body {
         radial-gradient(circle at 50% 42%, transparent 47.8%, rgba(200, 215, 245, 0.035) 48%, transparent 48.4%);
 }
 
-/* Apple keynote composition — everything centered */
 .hero-inner {
     position: relative;
     will-change: transform, opacity;
@@ -346,8 +322,7 @@ body {
     letter-spacing: -0.04em;
     margin: 0 0 26px;
 }
-/* transformed inline-block chars lose a parent's background-clip in WebKit,
-   so the gradient is applied to the split .ch spans as well */
+
 .hero-name .accent,
 .hero-name .accent .ch {
     background: var(--grad-ai);
@@ -356,7 +331,7 @@ body {
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
-/* split chars (created by JS) */
+
 .hero-name .ch {
     display: inline-block;
     will-change: transform, opacity;
@@ -371,7 +346,7 @@ body {
     letter-spacing: -0.01em;
     margin: 0 auto 18px;
 }
-/* emphasis stays in the same typeface — weight + gradient, no font switch */
+
 .hero-tagline em {
     font-style: normal;
     font-weight: 600;
@@ -416,7 +391,6 @@ body {
 .btn svg { width: 17px; height: 17px; transition: transform 0.3s var(--ease-out); }
 .btn:hover svg { transform: translateX(3px); }
 
-/* Apple-style pills: solid green primary, frosted glass secondary */
 .btn-primary {
     background: var(--accent);
     color: #03180b;
@@ -439,15 +413,13 @@ body {
     background: rgba(255, 255, 255, 0.16);
 }
 
-/* social icons live on their own centered row under the CTAs */
 .hero-socials {
     display: flex; gap: 20px;
     flex-basis: 100%;
     justify-content: center;
-    margin-top: 34px; /* clear separation from the CTA pills */
+    margin-top: 34px;
 }
-/* minimal monochrome glyphs, like Apple's footer social row —
-   44px invisible touch target, only the mark itself is visible */
+
 .btn-icon {
     display: inline-flex; align-items: center; justify-content: center;
     width: 44px; height: 44px;
@@ -512,9 +484,6 @@ body {
 }
 @keyframes cue-drop { to { top: 100%; } }
 
-/* ════════════════════════════════════════════════════════════════
-   MARQUEE — velocity-reactive ticker
-   ════════════════════════════════════════════════════════════════ */
 .marquee {
     overflow: hidden;
     padding: 30px 0;
@@ -528,7 +497,7 @@ body {
     display: flex; align-items: center; gap: 38px;
     width: max-content;
     will-change: transform;
-    animation: marquee-roll 36s linear infinite; /* CSS fallback; GSAP takes over */
+    animation: marquee-roll 36s linear infinite;
 }
 @keyframes marquee-roll { to { transform: translateX(-50%); } }
 .mq-item {
@@ -546,10 +515,56 @@ body {
 }
 .mq-dot { color: var(--accent); font-size: 0.85rem; }
 
-/* ============ Sections — shared ============ */
+main { position: relative; }
+
+.timeline {
+    position: absolute;
+    left: 50%;
+    width: 2px;
+    margin-left: -1px;
+    z-index: -1;
+    pointer-events: none;
+    display: none;
+}
+html.gsap .timeline { display: block; }
+.tl-track {
+    position: absolute; inset: 0;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+}
+.tl-progress {
+    position: absolute; inset: 0;
+    border-radius: 2px;
+    transform-origin: top center;
+    transform: scaleY(0);
+    background: linear-gradient(180deg, #30d158, #2dd4bf 60%, #64d2ff);
+    box-shadow: 0 0 14px rgba(48, 209, 88, 0.35);
+}
+.tl-tip {
+    position: absolute; top: 0; left: 50%;
+    width: 9px; height: 9px;
+    margin: -4px 0 0 -4.5px;
+    border-radius: 50%;
+    background: #b8f7cd;
+    box-shadow: 0 0 18px 5px rgba(48, 209, 88, 0.55);
+}
+.tl-node {
+    position: absolute; left: 50%;
+    width: 11px; height: 11px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #141416;
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+}
+.tl-node.active {
+    background: var(--accent);
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 16px 3px rgba(48, 209, 88, 0.55);
+}
+
 section { padding: 110px 0; position: relative; }
 
-/* centered section heads — keynote style */
 .section-head { margin-bottom: 54px; text-align: center; }
 
 .section-label {
@@ -573,13 +588,12 @@ section { padding: 110px 0; position: relative; }
     line-height: 1.06;
     letter-spacing: -0.03em;
 }
-/* split words (created by JS) */
+
 .section-title .w {
     display: inline-block;
     will-change: transform, opacity;
 }
 
-/* ============ Focus cards ============ */
 .focus-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -627,7 +641,6 @@ section { padding: 110px 0; position: relative; }
 .focus-card h3 { font-size: 1.12rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
 .focus-card p { color: var(--text-dim); font-size: 0.92rem; }
 
-/* ============ Stats band ============ */
 .stats { padding: 30px 0 90px; }
 .stats-grid {
     display: grid;
@@ -657,7 +670,6 @@ section { padding: 110px 0; position: relative; }
     letter-spacing: 0.08em;
 }
 
-/* ============ About cards ============ */
 .about-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -693,7 +705,6 @@ section { padding: 110px 0; position: relative; }
 .icon.cyan,   .s-icon.cyan   { color: var(--cyan);   background: var(--cyan-dim); }
 .icon.purple, .s-icon.purple { color: var(--purple); background: var(--purple-dim); }
 
-/* ============ Tech stack ============ */
 .stack-section { display: flex; flex-direction: column; gap: 30px; }
 .stack-category h3 {
     font-family: var(--font-mono);
@@ -720,7 +731,6 @@ section { padding: 110px 0; position: relative; }
     transform: translateY(-2px);
 }
 
-/* ============ Projects ============ */
 .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -818,7 +828,6 @@ section { padding: 110px 0; position: relative; }
 .link-more:hover { color: var(--accent); }
 .link-more:hover .arrow { transform: translateX(5px); }
 
-/* ============ Achievements ============ */
 .achievements-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
@@ -844,7 +853,6 @@ section { padding: 110px 0; position: relative; }
 .ach-item p { color: var(--text-dim); font-size: 0.92rem; }
 .ach-item strong { color: var(--text); font-weight: 600; }
 
-/* ============ Writeups ============ */
 .writeup-card {
     position: relative;
     display: flex; align-items: flex-end; justify-content: space-between;
@@ -906,7 +914,6 @@ section { padding: 110px 0; position: relative; }
 .wu-read .arrow { display: inline-block; transition: transform 0.3s var(--ease-out); }
 .writeup-card:hover .wu-read .arrow { transform: translateX(5px); }
 
-/* ============ Services & CTA ============ */
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -959,7 +966,6 @@ section { padding: 110px 0; position: relative; }
 .cta-text p { color: var(--text-dim); }
 .cta-banner .btn { position: relative; }
 
-/* ============ Contact ============ */
 .contact-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -997,7 +1003,6 @@ section { padding: 110px 0; position: relative; }
 .c-icon.or { color: var(--amber);  background: var(--amber-dim); }
 .c-icon.rd { color: var(--purple); background: var(--purple-dim); }
 
-/* ============ Footer ============ */
 footer {
     border-top: 1px solid var(--border);
     padding: 90px 0 46px;
@@ -1044,12 +1049,6 @@ footer {
 }
 .footer-links a:hover { color: var(--accent); }
 
-/* ════════════════════════════════════════════════════════════════
-   REVEAL SYSTEM
-   - no JS:          everything visible
-   - JS, no GSAP:    IntersectionObserver toggles .visible (CSS anim)
-   - GSAP:           html.gsap kills the CSS transition; GSAP animates
-   ════════════════════════════════════════════════════════════════ */
 html.js .reveal {
     opacity: 0;
     transform: translateY(32px);
@@ -1058,7 +1057,6 @@ html.js .reveal {
 html.js .reveal.visible { opacity: 1; transform: none; }
 html.gsap .reveal { transition: none; }
 
-/* ============ Responsive ============ */
 @media (max-width: 880px) {
     .nav-links { display: none; }
     .hamburger { display: flex; }
@@ -1067,9 +1065,6 @@ html.gsap .reveal { transition: none; }
     .cta-banner { padding: 34px 28px; }
 }
 
-/* Tall viewports (phones, "desktop site" phones, portrait tablets):
-   top-align the hero so content clears the fixed nav and there's no
-   cavernous empty space from vertical centering. */
 @media (max-aspect-ratio: 3/4) {
     .hero {
         align-items: flex-start;
@@ -1084,8 +1079,7 @@ html.gsap .reveal { transition: none; }
     .hero-name { font-size: clamp(2.8rem, 12.5vw, 4.4rem); margin-bottom: 22px; }
     .hero-tagline { font-size: 1.16rem; }
     .hero-desc { margin-bottom: 30px; }
-    /* stack the CTAs full-width so labels never wrap and nothing crowds;
-       the social icons sit on their own row below */
+
     .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; margin-bottom: 36px; }
     .hero-actions .btn { width: 100%; justify-content: center; padding: 14px 20px; }
     .hero-socials { margin-top: 26px; }
@@ -1097,7 +1091,6 @@ html.gsap .reveal { transition: none; }
     .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
 }
 
-/* ============ Reduced motion ============ */
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     *, *::before, *::after {

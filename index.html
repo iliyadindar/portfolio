@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSP allows analytics scripts without brittle per-load hashes and blocks inline event handlers. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com 'unsafe-inline'; script-src-attr 'none'; style-src 'self'; font-src 'self'; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://region1.google-analytics.com; connect-src 'self' https://api.github.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://region1.google-analytics.com https://region1.analytics.google.com https://cloudflareinsights.com; frame-src https://www.googletagmanager.com; worker-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -24,14 +23,12 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Iliya Dindar — Computer Engineer & Security Researcher">
     <meta name="twitter:description" content="Building scalable systems, exploring AI, and hunting vulnerabilities.">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-93853W5SBL"></script>
     <script src="/statics/gtag.js" defer></script>
-    <!-- Fonts are self-hosted (see style.css @font-face) so typography is identical for every visitor -->
     <link rel="preload" href="/statics/fonts/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/statics/fonts/fira-code-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="/statics/style.css?v=20260611b">
+    <link rel="stylesheet" href="/statics/style.css?v=20260611c">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -54,7 +51,6 @@
 
     <a href="#main" class="skip-link">skip to content</a>
 
-    <!-- Global cinematic backdrop — layers drift at different depths on scroll -->
     <div class="cine-bg" aria-hidden="true">
         <div class="cb-layer cb-aurora ca1" data-depth="0.10"></div>
         <div class="cb-layer cb-aurora ca2" data-depth="0.22"></div>
@@ -66,7 +62,6 @@
     </div>
     <div class="grain" aria-hidden="true"></div>
 
-    <!-- NAV -->
     <nav class="site-nav" aria-label="Primary">
         <div class="container">
             <a href="#" class="nav-logo" aria-label="Back to top">iliya<span class="cursor">_</span></a>
@@ -95,7 +90,12 @@
 
     <main id="main">
 
-    <!-- HERO — cinematic pinned landing -->
+    <div class="timeline" aria-hidden="true">
+        <span class="tl-track"></span>
+        <span class="tl-progress"></span>
+        <span class="tl-tip"></span>
+    </div>
+
     <section class="hero" id="hero">
         <div class="hero-bg" aria-hidden="true">
             <div class="hb-layer hb-aurora ha1" data-hero-depth="0.85"></div>
@@ -169,7 +169,6 @@
         </div>
     </section>
 
-    <!-- MARQUEE — velocity-reactive ticker -->
     <div class="marquee" aria-hidden="true">
         <div class="marquee-track" data-marquee>
             <span class="mq-item">Security Research</span><span class="mq-dot">◆</span>
@@ -187,7 +186,6 @@
         </div>
     </div>
 
-    <!-- CURRENTLY FOCUSED ON -->
     <section id="focus">
         <div class="container">
             <div class="section-head">
@@ -219,7 +217,6 @@
         </div>
     </section>
 
-    <!-- STATS — counters animate on scroll -->
     <section class="stats" id="stats" aria-label="Key numbers">
         <div class="container">
             <div class="stats-grid">
@@ -243,7 +240,6 @@
         </div>
     </section>
 
-    <!-- ABOUT -->
     <section id="about">
         <div class="container">
             <div class="section-head">
@@ -280,7 +276,6 @@
         </div>
     </section>
 
-    <!-- TECH STACK -->
     <section id="stack">
         <div class="container">
             <div class="section-head">
@@ -346,7 +341,6 @@
         </div>
     </section>
 
-    <!-- PROJECTS -->
     <section id="projects">
         <div class="container">
             <div class="section-head">
@@ -444,7 +438,6 @@
         </div>
     </section>
 
-    <!-- ACHIEVEMENTS -->
     <section id="achievements">
         <div class="container">
             <div class="section-head">
@@ -480,7 +473,6 @@
         </div>
     </section>
 
-    <!-- WRITEUPS -->
     <section id="writeups">
         <div class="container">
             <div class="section-head">
@@ -510,7 +502,6 @@
         </div>
     </section>
 
-    <!-- SERVICES -->
     <section id="services">
         <div class="container">
             <div class="section-head">
@@ -548,7 +539,6 @@
         </div>
     </section>
 
-    <!-- CONTACT -->
     <section id="contact">
         <div class="container">
             <div class="section-head">
@@ -586,7 +576,6 @@
 
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="container">
             <a href="mailto:ilia.dindar@gmail.com" class="footer-giant reveal">
@@ -610,7 +599,7 @@
 
     <script src="/statics/gsap.min.js?v=3.12.7" defer></script>
     <script src="/statics/ScrollTrigger.min.js?v=3.12.7" defer></script>
-    <script src="/statics/main.js?v=20260611b" defer></script>
+    <script src="/statics/main.js?v=20260611c" defer></script>
 
 </body>
 </html>

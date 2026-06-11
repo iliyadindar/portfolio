@@ -1,15 +1,8 @@
-// Reveal animations are gated on this class so content stays visible without JS
 document.documentElement.classList.add('js');
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const gsapActive = !prefersReducedMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
-/* ════════════════════════════════════════════════════════
-   Reveal system
-   GSAP path: ScrollTrigger-batched staggers.
-   Fallback:  IntersectionObserver + .visible class.
-   Either way, revealEl() registers late-added cards too.
-   ════════════════════════════════════════════════════════ */
 let revealEl;
 let fallbackObserver = null;
 
@@ -26,14 +19,10 @@ if (!gsapActive) {
     revealEl = (el) => fallbackObserver.observe(el);
 }
 
-/* ════════════════════════════════════════════════════════
-   GSAP — cinematic scroll experience
-   ════════════════════════════════════════════════════════ */
 if (gsapActive) {
     gsap.registerPlugin(ScrollTrigger);
     document.documentElement.classList.add('gsap');
 
-    /* ---- text splitting (keeps accessible names via aria-label) ---- */
     function splitChars(el) {
         const label = el.textContent.replace(/\s+/g, ' ').trim();
         el.setAttribute('aria-label', label);
@@ -77,7 +66,6 @@ if (gsapActive) {
         return el.querySelectorAll('.w');
     }
 
-    /* ---- hero intro (plays on load) ---- */
     const heroName = document.querySelector('.hero-name[data-split]');
     const chars = heroName ? splitChars(heroName) : [];
 
@@ -92,7 +80,6 @@ if (gsapActive) {
         .from('.status-bar .status-item', { y: 14, opacity: 0, duration: 0.5, stagger: 0.07 }, '-=0.45')
         .from('.scroll-cue', { opacity: 0, duration: 0.8 }, '-=0.2');
 
-    /* ---- pinned cinematic hero: layers part at different depths ---- */
     const mm = gsap.matchMedia();
     mm.add('(min-width: 881px)', () => {
         const heroScrub = gsap.timeline({
@@ -114,18 +101,16 @@ if (gsapActive) {
             const depth = parseFloat(layer.dataset.heroDepth) || 0.5;
             heroScrub.to(layer, { yPercent: -(1 - depth) * 90, scale: 1 + (1 - depth) * 0.3 }, 0);
         });
-        return () => {}; // matchMedia cleans up its own triggers
+        return () => {};
     });
 
     mm.add('(max-width: 880px)', () => {
-        // lighter, unpinned parallax on small screens
         gsap.to('.hero-inner', {
             yPercent: -8, opacity: 0.15, ease: 'none',
             scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 }
         });
     });
 
-    /* ---- global layered backdrop drift (parallax by data-depth) ---- */
     gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
         const depth = parseFloat(layer.dataset.depth) || 0;
         gsap.to(layer, {
@@ -135,10 +120,9 @@ if (gsapActive) {
         });
     });
 
-    /* ---- section titles: word-by-word rise ---- */
     gsap.utils.toArray('[data-split-words]').forEach(title => {
         const words = splitWords(title);
-        gsap.set(title, { opacity: 1, y: 0 }); // override .reveal initial state
+        gsap.set(title, { opacity: 1, y: 0 });
         gsap.from(words, {
             yPercent: 115, opacity: 0, rotate: 3,
             duration: 0.85, ease: 'power4.out', stagger: 0.07,
@@ -146,16 +130,12 @@ if (gsapActive) {
         });
     });
 
-    /* ---- batched card / block reveals ---- */
     ScrollTrigger.batch('.reveal:not([data-split-words])', {
         start: 'top 88%',
         once: true,
         onEnter: batch => gsap.to(batch, {
             opacity: 1, y: 0,
             duration: 0.9, ease: 'power3.out',
-            // cap total stagger at 0.5s so a fast jump to the bottom
-            // (which lands dozens of elements in one batch) never leaves
-            // content invisible for seconds
             stagger: Math.min(0.09, 0.5 / batch.length),
             overwrite: true
         })
@@ -169,7 +149,6 @@ if (gsapActive) {
         });
     };
 
-    /* ---- stat counters ---- */
     gsap.utils.toArray('.stat-num[data-count]').forEach(el => {
         const target = parseFloat(el.dataset.count);
         const suffix = el.dataset.suffix || '';
@@ -185,10 +164,9 @@ if (gsapActive) {
         });
     });
 
-    /* ---- marquee: constant roll, accelerates with scroll velocity ---- */
     const track = document.querySelector('[data-marquee]');
     if (track) {
-        track.style.animation = 'none'; // GSAP replaces the CSS fallback loop
+        track.style.animation = 'none';
         const roll = gsap.to(track, { xPercent: -50, ease: 'none', duration: 30, repeat: -1 });
         ScrollTrigger.create({
             onUpdate: (self) => {
@@ -199,13 +177,55 @@ if (gsapActive) {
         });
     }
 
+    const tlWrap = document.querySelector('.timeline');
+    const tlStartEl = document.querySelector('#focus');
+    const tlEndEl = document.querySelector('#contact');
+    if (tlWrap && tlStartEl && tlEndEl) {
+        const mainEl = document.getElementById('main');
+        const heads = gsap.utils.toArray('main .section-head');
+        const nodes = heads.map(() => {
+            const n = document.createElement('span');
+            n.className = 'tl-node';
+            tlWrap.appendChild(n);
+            return n;
+        });
+
+        const layoutTimeline = () => {
+            const mainTop = mainEl.getBoundingClientRect().top + window.scrollY;
+            const startY = tlStartEl.getBoundingClientRect().top + window.scrollY - mainTop + 30;
+            const endY = tlEndEl.getBoundingClientRect().bottom + window.scrollY - mainTop - 90;
+            tlWrap.style.top = startY + 'px';
+            tlWrap.style.height = Math.max(endY - startY, 0) + 'px';
+            heads.forEach((h, i) => {
+                const headTop = h.getBoundingClientRect().top + window.scrollY - mainTop;
+                nodes[i].style.top = (headTop - startY - 34) + 'px';
+            });
+        };
+        layoutTimeline();
+        ScrollTrigger.addEventListener('refresh', layoutTimeline);
+
+        const tlScrub = {
+            trigger: tlStartEl,
+            start: 'top center',
+            endTrigger: tlEndEl,
+            end: 'bottom center',
+            scrub: 0.4,
+            invalidateOnRefresh: true
+        };
+        gsap.fromTo('.tl-progress', { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: tlScrub });
+        gsap.fromTo('.tl-tip', { y: 0 }, { y: () => tlWrap.offsetHeight, ease: 'none',
+            scrollTrigger: { ...tlScrub } });
+
+        heads.forEach((h, i) => ScrollTrigger.create({
+            trigger: h,
+            start: 'top 52%',
+            onEnter: () => nodes[i].classList.add('active'),
+            onLeaveBack: () => nodes[i].classList.remove('active')
+        }));
+    }
+
 }
 
-/* ════════════════════════════════════════════════════════
-   Core UI (independent of GSAP)
-   ════════════════════════════════════════════════════════ */
-
-// Hamburger menu
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 hamburger.addEventListener('click', () => {
@@ -225,7 +245,6 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
 });
 
-// Typing effect for terminal line
 const cmdEl = document.querySelector('.terminal-line .cmd');
 if (cmdEl && !prefersReducedMotion) {
     const text = cmdEl.textContent;
@@ -237,7 +256,6 @@ if (cmdEl && !prefersReducedMotion) {
     setTimeout(type, 500);
 }
 
-// Nav elevation
 const nav = document.querySelector('.site-nav');
 const onScroll = () => {
     nav.classList.toggle('scrolled', window.scrollY > 24);
@@ -245,7 +263,6 @@ const onScroll = () => {
 onScroll();
 window.addEventListener('scroll', onScroll, { passive: true });
 
-// Scroll spy — highlight the nav link of the section in view
 const navAnchors = [...document.querySelectorAll('.nav-links a[href^="#"]')];
 const spyTargets = navAnchors
     .map(a => document.getElementById(a.hash.slice(1)))
@@ -258,11 +275,9 @@ const spy = new IntersectionObserver((entries) => {
 }, { rootMargin: '-35% 0px -55% 0px' });
 spyTargets.forEach(sec => spy.observe(sec));
 
-// Footer year
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// Auto-crawl GitHub repos: star badges for every repo card + cards for missing repos
 (async function loadGitHubProjects() {
     const GITHUB_USERNAME = 'iliyadindar';
     const grid = document.querySelector('.projects-grid');
@@ -278,7 +293,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         if (nameEl) existingNames.add(nameEl.textContent.trim().toLowerCase());
     });
 
-    // Static icon markup only — never interpolate external data into these strings
     const strokeIcon = (body) =>
         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
     const ICONS = {
@@ -307,7 +321,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     };
     const defaultConfig = { icon: ICONS.folder, color: 'g' };
 
-    // Star badge next to the project title; count is inserted as a text node
     function addStarBadge(card, count) {
         const h3 = card.querySelector('.project-info h3');
         if (!h3 || h3.querySelector('.repo-stars')) return;
@@ -319,21 +332,18 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         h3.appendChild(badge);
     }
 
-    // Build card using DOM APIs — external data only ever set via textContent
     function createProjectCard(repo, cfg, desc, tags) {
         const card = document.createElement('a');
         card.href = repo.html_url;
         card.target = '_blank';
-        card.rel = 'noopener noreferrer';           // prevent tab-napping
+        card.rel = 'noopener noreferrer';
         card.className = 'project-card reveal';
 
-        // Icon
         const iconDiv = document.createElement('div');
         iconDiv.className = `project-icon ${cfg.color}`;
         iconDiv.setAttribute('aria-hidden', 'true');
         iconDiv.innerHTML = cfg.icon;
 
-        // Info wrapper
         const infoDiv = document.createElement('div');
         infoDiv.className = 'project-info';
 
@@ -357,7 +367,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         infoDiv.appendChild(p);
         infoDiv.appendChild(tagsDiv);
 
-        // Arrow
         const arrow = document.createElement('span');
         arrow.className = 'project-arrow';
         arrow.setAttribute('aria-hidden', 'true');
@@ -375,7 +384,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         if (!resp.ok) return;
         const repos = await resp.json();
 
-        // Live star counts for the hardcoded cards that link to a known repo
         const repoByUrl = new Map();
         repos.forEach(r => repoByUrl.set(r.html_url.toLowerCase().replace(/\/$/, ''), r));
         existingCards.forEach(card => {
@@ -392,7 +400,6 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
             return !existingUrls.has(repoUrl) && !existingNames.has(repoName);
         });
 
-        // Most-starred first, then most recently updated
         newRepos.sort((a, b) =>
             (b.stargazers_count || 0) - (a.stargazers_count || 0) ||
             new Date(b.updated_at) - new Date(a.updated_at)
