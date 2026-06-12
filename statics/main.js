@@ -10,11 +10,11 @@ if (!gsapActive) {
     fallbackObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry, i) => {
             if (entry.isIntersecting) {
-                setTimeout(() => entry.target.classList.add('visible'), i * 50);
+                setTimeout(() => entry.target.classList.add('visible'), i * 35);
                 fallbackObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.08 });
+    }, { rootMargin: '0px 0px 120px 0px', threshold: 0.03 });
     document.querySelectorAll('.reveal').forEach(el => fallbackObserver.observe(el));
     revealEl = (el) => fallbackObserver.observe(el);
 }
@@ -105,20 +105,16 @@ if (gsapActive) {
         return () => {};
     });
 
-    mm.add('(max-width: 880px)', () => {
-        gsap.to('.hero-inner', {
-            yPercent: -8, opacity: 0.15, ease: 'none',
-            scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 }
+    mm.add('(min-width: 881px)', () => {
+        const tweens = gsap.utils.toArray('.cine-bg [data-depth]').map(layer => {
+            const depth = parseFloat(layer.dataset.depth) || 0;
+            return gsap.to(layer, {
+                y: () => -depth * 400,
+                ease: 'none',
+                scrollTrigger: { start: 0, end: 'max', scrub: 1.2, invalidateOnRefresh: true }
+            });
         });
-    });
-
-    gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
-        const depth = parseFloat(layer.dataset.depth) || 0;
-        gsap.to(layer, {
-            y: () => -depth * 400,
-            ease: 'none',
-            scrollTrigger: { start: 0, end: 'max', scrub: 1.2, invalidateOnRefresh: true }
-        });
+        return () => tweens.forEach(tween => tween.kill());
     });
 
     gsap.utils.toArray('[data-split-words]').forEach(title => {
@@ -165,23 +161,30 @@ if (gsapActive) {
         });
     });
 
-    const track = document.querySelector('[data-marquee]');
-    if (track) {
+    mm.add('(min-width: 881px)', () => {
+        const track = document.querySelector('[data-marquee]');
+        if (!track) return () => {};
         track.style.animation = 'none';
         const roll = gsap.to(track, { xPercent: -50, ease: 'none', duration: 30, repeat: -1 });
-        ScrollTrigger.create({
+        const velocityBoost = ScrollTrigger.create({
             onUpdate: (self) => {
                 const boost = gsap.utils.clamp(1, 6, Math.abs(self.getVelocity()) / 300);
                 roll.timeScale(boost);
                 gsap.to(roll, { timeScale: 1, duration: 1.2, ease: 'power2.out', overwrite: true });
             }
         });
-    }
+        return () => {
+            velocityBoost.kill();
+            roll.kill();
+            track.style.animation = '';
+            gsap.set(track, { clearProps: 'transform' });
+        };
+    });
 
     const tlWrap = document.querySelector('.timeline');
     const tlStartEl = document.querySelector('#focus');
     const tlEndEl = document.querySelector('#contact');
-    if (tlWrap && tlStartEl && tlEndEl) {
+    if (tlWrap && tlStartEl && tlEndEl && window.matchMedia('(min-width: 881px)').matches) {
         const mainEl = document.getElementById('main');
         const heads = gsap.utils.toArray('main .section-head');
         const nodes = heads.map(() => {
@@ -279,7 +282,19 @@ spyTargets.forEach(sec => spy.observe(sec));
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-(async function loadGitHubProjects() {
+function runWhenIdle(fn) {
+    const schedule = () => {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(fn, { timeout: 4200 });
+        } else {
+            window.setTimeout(fn, 1200);
+        }
+    };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+}
+
+async function loadGitHubProjects() {
     const GITHUB_USERNAME = 'iliyadindar';
     const grid = document.querySelector('.projects-grid');
     if (!grid) return;
@@ -381,9 +396,18 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     }
 
     try {
-        const resp = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`);
-        if (!resp.ok) return;
-        const repos = await resp.json();
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 4500);
+        let repos;
+        try {
+            const resp = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`, {
+                signal: controller.signal
+            });
+            if (!resp.ok) return;
+            repos = await resp.json();
+        } finally {
+            window.clearTimeout(timeout);
+        }
 
         const repoByUrl = new Map();
         repos.forEach(r => repoByUrl.set(r.html_url.toLowerCase().replace(/\/$/, ''), r));
@@ -428,5 +452,9 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         });
 
         if (gsapActive && newRepos.length) ScrollTrigger.refresh();
-    } catch (e) {}
-})();
+    } catch (err) {
+        console.warn('Unable to load GitHub projects', err);
+    }
+}
+
+runWhenIdle(loadGitHubProjects);
