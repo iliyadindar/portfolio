@@ -127,7 +127,7 @@ function initPortfolio() {
             });
         }
 
-        gsap.matchMedia().add('(min-width: 881px)', () => {
+        gsap.matchMedia().add('(min-width: 880.1px)', () => {
             gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
                 const depth = parseFloat(layer.dataset.depth) || 0;
                 gsap.to(layer, {
