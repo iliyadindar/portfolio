@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://iliyadindar.site/sitemap.xml
