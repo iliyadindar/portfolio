@@ -1,7 +1,8 @@
 document.documentElement.classList.add('js');
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const gsapActive = !prefersReducedMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+const prefersLiteMotion = window.matchMedia('(max-width: 880px), (pointer: coarse)').matches;
+const gsapActive = !prefersReducedMotion && !prefersLiteMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
 let revealEl;
 let fallbackObserver = null;
@@ -10,11 +11,11 @@ if (!gsapActive) {
     fallbackObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry, i) => {
             if (entry.isIntersecting) {
-                setTimeout(() => entry.target.classList.add('visible'), i * 50);
+                setTimeout(() => entry.target.classList.add('visible'), i * 35);
                 fallbackObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.08 });
+    }, { rootMargin: '0px 0px 120px 0px', threshold: 0.03 });
     document.querySelectorAll('.reveal').forEach(el => fallbackObserver.observe(el));
     revealEl = (el) => fallbackObserver.observe(el);
 }
@@ -279,7 +280,19 @@ spyTargets.forEach(sec => spy.observe(sec));
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-(async function loadGitHubProjects() {
+function runWhenIdle(fn) {
+    const schedule = () => {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(fn, { timeout: 4200 });
+        } else {
+            window.setTimeout(fn, 1200);
+        }
+    };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+}
+
+async function loadGitHubProjects() {
     const GITHUB_USERNAME = 'iliyadindar';
     const grid = document.querySelector('.projects-grid');
     if (!grid) return;
@@ -381,7 +394,12 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
     }
 
     try {
-        const resp = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`);
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 4500);
+        const resp = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated&type=owner`, {
+            signal: controller.signal
+        });
+        window.clearTimeout(timeout);
         if (!resp.ok) return;
         const repos = await resp.json();
 
@@ -428,5 +446,9 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
         });
 
         if (gsapActive && newRepos.length) ScrollTrigger.refresh();
-    } catch (e) {}
-})();
+    } catch (err) {
+        console.warn('Unable to load GitHub projects', err);
+    }
+}
+
+runWhenIdle(loadGitHubProjects);
