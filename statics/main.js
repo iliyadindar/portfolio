@@ -240,6 +240,81 @@ function initPortfolio() {
             }));
         }
 
+        initPointerFX();
+    }
+
+    function initPointerFX() {
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (!finePointer) return;
+        document.documentElement.classList.add('fx');
+
+        const glow = document.createElement('div');
+        glow.className = 'cursor-glow';
+        glow.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(glow);
+        const glowX = gsap.quickTo(glow, 'x', { duration: 0.5, ease: 'power3' });
+        const glowY = gsap.quickTo(glow, 'y', { duration: 0.5, ease: 'power3' });
+        window.addEventListener('pointermove', (e) => {
+            glow.classList.add('on');
+            glowX(e.clientX);
+            glowY(e.clientY);
+        }, { passive: true });
+        window.addEventListener('pointerdown', () => gsap.fromTo(glow,
+            { scale: 0.82 }, { scale: 1, duration: 0.5, ease: 'power3.out' }));
+
+        gsap.utils.toArray('.btn-primary, .btn-icon, .nav-logo').forEach(el => {
+            const xTo = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
+            const yTo = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
+            const strength = el.classList.contains('btn-icon') ? 0.5 : 0.32;
+            el.addEventListener('pointermove', (e) => {
+                const r = el.getBoundingClientRect();
+                xTo((e.clientX - (r.left + r.width / 2)) * strength);
+                yTo((e.clientY - (r.top + r.height / 2)) * strength);
+            });
+            el.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+        });
+
+        const registerTilt = (card) => {
+            if (card.dataset.tiltReady) return;
+            card.dataset.tiltReady = '1';
+            card.setAttribute('data-tilt', '');
+            const glare = document.createElement('span');
+            glare.className = 'tilt-glare';
+            glare.setAttribute('aria-hidden', 'true');
+            card.appendChild(glare);
+            const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.4, ease: 'power3' });
+            const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.4, ease: 'power3' });
+            const MAX = 7;
+            card.addEventListener('pointermove', (e) => {
+                const r = card.getBoundingClientRect();
+                const px = (e.clientX - r.left) / r.width;
+                const py = (e.clientY - r.top) / r.height;
+                rotY((px - 0.5) * MAX * 2);
+                rotX((0.5 - py) * MAX * 2);
+                glare.style.setProperty('--gx', (px * 100) + '%');
+                glare.style.setProperty('--gy', (py * 100) + '%');
+            });
+            card.addEventListener('pointerleave', () => { rotX(0); rotY(0); });
+        };
+        gsap.set('.project-card, .focus-card, .service-card', { transformPerspective: 900 });
+        gsap.utils.toArray('.project-card, .focus-card, .service-card').forEach(registerTilt);
+        window.__tiltRegister = registerTilt;
+
+        const heroLayers = gsap.utils.toArray('.hero-bg .hb-layer');
+        if (heroLayers.length) {
+            const xMove = heroLayers.map(l => gsap.quickTo(l, 'x', { duration: 0.9, ease: 'power3' }));
+            const yMove = heroLayers.map(l => gsap.quickTo(l, 'y', { duration: 0.9, ease: 'power3' }));
+            window.addEventListener('pointermove', (e) => {
+                const cx = e.clientX / window.innerWidth - 0.5;
+                const cy = e.clientY / window.innerHeight - 0.5;
+                heroLayers.forEach((l, i) => {
+                    const depth = parseFloat(l.dataset.heroDepth) || 0.5;
+                    const amt = (1 - depth) * 50;
+                    xMove[i](cx * amt);
+                    yMove[i](cy * amt);
+                });
+            }, { passive: true });
+        }
     }
 
     const hamburger = document.getElementById('hamburger');
@@ -460,6 +535,10 @@ function initPortfolio() {
                 addStarBadge(card, repo.stargazers_count || 0);
                 grid.appendChild(card);
                 if (revealEl) revealEl(card);
+                if (window.__tiltRegister) {
+                    gsap.set(card, { transformPerspective: 900 });
+                    window.__tiltRegister(card);
+                }
             });
 
             if (gsapActive && newRepos.length) ScrollTrigger.refresh();
