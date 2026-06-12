@@ -1,7 +1,8 @@
 document.documentElement.classList.add('js');
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const gsapActive = !prefersReducedMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
+const prefersLiteMotion = window.matchMedia('(max-width: 880px), (pointer: coarse)').matches;
+const gsapActive = !prefersReducedMotion && !prefersLiteMotion && typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
 let revealEl;
 let fallbackObserver = null;

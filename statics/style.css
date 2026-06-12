@@ -1065,7 +1065,16 @@ html.gsap .reveal { transition: none; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
     section { padding: 80px 0; }
-    .scroll-cue { display: none; }
+    .scroll-cue, .timeline, .grain { display: none; }
+    .cine-bg { position: absolute; inset: 0; opacity: 0.55; }
+    .cb-layer, .hb-layer { will-change: auto; }
+    .cb-stars, .cb-grid, .hb-rings { display: none; }
+    .cb-aurora, .hb-aurora { filter: blur(56px); animation: none; }
+    .site-nav.scrolled, .project-card, .about-card, .focus-card, .writeup-card, .service-card, .contact-card, .btn-outline {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+    .project-card:hover, .contact-card:hover, .chip:hover, .btn-icon:hover { transform: none; }
     .cta-banner { padding: 34px 28px; }
 }
 
