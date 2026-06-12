@@ -349,12 +349,10 @@ body {
 
 .hero-tagline em {
     font-style: normal;
-    font-weight: 600;
-    background: var(--grad-ai);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
+    font-weight: inherit;
+    color: inherit;
+    background: none;
+    -webkit-text-fill-color: currentColor;
 }
 
 .hero-title {
@@ -501,6 +499,7 @@ body {
 }
 @keyframes marquee-roll { to { transform: translateX(-50%); } }
 .mq-item {
+    font-family: var(--font-sans);
     font-size: clamp(1.5rem, 3.4vw, 2.4rem);
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -513,7 +512,14 @@ body {
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.32);
     opacity: 1;
 }
-.mq-dot { color: var(--accent); font-size: 0.85rem; }
+.mq-dot {
+    flex: none;
+    width: 8px; height: 8px;
+    font-size: 0;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: rotate(45deg);
+}
 
 main { position: relative; }
 
@@ -1122,6 +1128,18 @@ html.fx [data-tilt] {
 }
 html.fx [data-tilt]:hover .tilt-glare { opacity: 1; }
 html.fx [data-magnetic] { will-change: transform; }
+html.fx .btn-primary { transition: box-shadow 0.3s var(--ease-out), background 0.3s, border-color 0.3s; }
+html.fx .btn-icon { transition: color 0.25s, background 0.25s; }
+html.fx .nav-logo { transition: color 0.25s; }
+html.fx .btn-primary:hover, html.fx .btn-icon:hover { transform: none; }
+
+@media (max-width: 880px) {
+    .cb-aurora { filter: blur(45px); opacity: 0.38; }
+    .cb-aurora.ca1, .cb-aurora.ca2, .cb-aurora.ca3 { animation: none; }
+    .cb-stars { display: none; }
+    .grain { display: none; }
+    .cb-layer { will-change: auto; }
+}
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }

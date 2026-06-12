@@ -72,16 +72,16 @@ function initPortfolio() {
         const heroName = document.querySelector('.hero-name[data-split]');
         const chars = heroName ? splitChars(heroName) : [];
 
-        const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
+        const intro = gsap.timeline({ defaults: { ease: 'power3.out' } });
         intro
-            .from('.terminal-line', { y: 18, opacity: 0, duration: 0.6 }, 0.1)
-            .from(chars, { yPercent: 110, opacity: 0, rotate: 5, duration: 1.1, stagger: 0.04 }, 0.25)
-            .from('.hero-tagline', { y: 28, opacity: 0, duration: 0.9 }, '-=0.65')
-            .from('.hero-title', { y: 18, opacity: 0, duration: 0.7 }, '-=0.65')
-            .from('.hero-desc', { y: 18, opacity: 0, duration: 0.7 }, '-=0.55')
-            .from('.hero-actions > *', { y: 22, opacity: 0, duration: 0.7, stagger: 0.08 }, '-=0.5')
-            .from('.status-bar .status-item', { y: 14, opacity: 0, duration: 0.5, stagger: 0.07 }, '-=0.45')
-            .from('.scroll-cue', { opacity: 0, duration: 0.8 }, '-=0.2');
+            .from('.terminal-line', { y: 14, opacity: 0, duration: 0.4 }, 0.05)
+            .from(chars, { yPercent: 110, opacity: 0, duration: 0.7, stagger: 0.025 }, 0.15)
+            .from('.hero-tagline', { y: 20, opacity: 0, duration: 0.5 }, '-=0.45')
+            .from('.hero-title', { y: 14, opacity: 0, duration: 0.45 }, '-=0.4')
+            .from('.hero-desc', { y: 14, opacity: 0, duration: 0.45 }, '-=0.35')
+            .from('.hero-actions > *', { y: 16, opacity: 0, duration: 0.45, stagger: 0.06 }, '-=0.3')
+            .from('.status-bar .status-item', { y: 10, opacity: 0, duration: 0.4, stagger: 0.05 }, '-=0.3')
+            .from('.scroll-cue', { opacity: 0, duration: 0.5 }, '-=0.15');
 
         const heroEl = document.querySelector('.hero');
         if (heroEl) {
@@ -127,12 +127,14 @@ function initPortfolio() {
             });
         }
 
-        gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
-            const depth = parseFloat(layer.dataset.depth) || 0;
-            gsap.to(layer, {
-                y: () => -depth * 400,
-                ease: 'none',
-                scrollTrigger: { start: 0, end: 'max', scrub: 1.2, invalidateOnRefresh: true }
+        gsap.matchMedia().add('(min-width: 880.1px)', () => {
+            gsap.utils.toArray('.cine-bg [data-depth]').forEach(layer => {
+                const depth = parseFloat(layer.dataset.depth) || 0;
+                gsap.to(layer, {
+                    y: () => -depth * 400,
+                    ease: 'none',
+                    scrollTrigger: { start: 0, end: 'max', scrub: 1.2, invalidateOnRefresh: true }
+                });
             });
         });
 
