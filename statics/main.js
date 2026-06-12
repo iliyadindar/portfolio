@@ -268,12 +268,17 @@ function initPortfolio() {
             const xTo = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
             const yTo = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
             const strength = el.classList.contains('btn-icon') ? 0.5 : 0.32;
+            const reset = () => { xTo(0); yTo(0); };
             el.addEventListener('pointermove', (e) => {
                 const r = el.getBoundingClientRect();
-                xTo((e.clientX - (r.left + r.width / 2)) * strength);
-                yTo((e.clientY - (r.top + r.height / 2)) * strength);
+                const cx = r.left + r.width / 2 - gsap.getProperty(el, 'x');
+                const cy = r.top + r.height / 2 - gsap.getProperty(el, 'y');
+                xTo((e.clientX - cx) * strength);
+                yTo((e.clientY - cy) * strength);
             });
-            el.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+            el.addEventListener('pointerleave', reset);
+            el.addEventListener('pointercancel', reset);
+            el.addEventListener('blur', reset, true);
         });
 
         const registerTilt = (card) => {
