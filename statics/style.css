@@ -665,6 +665,7 @@ section { padding: 110px 0; position: relative; }
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
+.stat-ord { font-size: 0.5em; letter-spacing: 0; }
 .stat-label {
     font-family: var(--font-mono);
     font-size: 0.78rem;
@@ -817,6 +818,18 @@ section { padding: 110px 0; position: relative; }
     color: var(--accent);
     transform: translate(3px, -3px);
 }
+.project-arrow.soon {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+.project-card:hover .project-arrow.soon { transform: none; color: var(--text-dim); }
+div.project-card { cursor: default; }
 
 .projects-footer { margin-top: 36px; text-align: center; }
 .link-more {
